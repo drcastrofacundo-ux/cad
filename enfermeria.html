@@ -1,0 +1,323 @@
+<title>Hoja de Bomba de Insulina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --ground:#F4F6F8; --surface:#FFFFFF; --surface-2:#EDF1F4;
+  --ink:#0E141A; --ink-2:#3C4A57; --muted:#68788A;
+  --hairline:#D6DEE5; --hairline-2:#B9C6D1;
+  --accent:#0A6480; --accent-soft:#E1F0F5; --accent-ink:#064B61;
+  --stop:#B31F35; --stop-soft:#FBE7EA;
+  --warn:#9C6100; --warn-soft:#FBF0DC;
+  --go:#11694E; --go-soft:#E0F2EA;
+  --shadow:0 1px 2px rgba(14,20,26,.06),0 6px 18px -10px rgba(14,20,26,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0A0F14; --surface:#121A21; --surface-2:#1A242D;
+  --ink:#E7EEF4; --ink-2:#B7C4D0; --muted:#8496A6;
+  --hairline:#222F3A; --hairline-2:#2E3E4B;
+  --accent:#41B9DC; --accent-soft:#10303C; --accent-ink:#8FD8EE;
+  --stop:#FF7186; --stop-soft:#3A1219;
+  --warn:#E8A63F; --warn-soft:#372511;
+  --go:#43D19D; --go-soft:#0E3227;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --ground:#0A0F14; --surface:#121A21; --surface-2:#1A242D;
+  --ink:#E7EEF4; --ink-2:#B7C4D0; --muted:#8496A6;
+  --hairline:#222F3A; --hairline-2:#2E3E4B;
+  --accent:#41B9DC; --accent-soft:#10303C; --accent-ink:#8FD8EE;
+  --stop:#FF7186; --stop-soft:#3A1219;
+  --warn:#E8A63F; --warn-soft:#372511;
+  --go:#43D19D; --go-soft:#0E3227;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.45;
+  -webkit-text-size-adjust:100%}
+
+/* ---- barra de control (no se imprime) ---- */
+.bar{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:1px solid var(--hairline);box-shadow:var(--shadow);padding:10px 14px}
+.bar-in{max-width:860px;margin:0 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar b{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:16px;margin-right:auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:600;font-size:13px;
+  padding:7px 12px;border-radius:20px;cursor:pointer;background:var(--surface-2);
+  color:var(--ink-2);border:1px solid var(--hairline-2)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:600;font-size:13px;
+  padding:7px 12px;border-radius:8px;cursor:pointer;background:var(--go);color:#fff;border:0}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.page-wrap{max-width:860px;margin:0 auto;padding:18px 14px 60px}
+
+/* ---- la hoja ---- */
+.sheet{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;
+  box-shadow:var(--shadow);padding:20px 22px 18px}
+
+.sh-top{display:flex;gap:14px;align-items:flex-start;border-bottom:2.5px solid var(--ink);
+  padding-bottom:11px;margin-bottom:15px}
+.sh-top .t{flex:1;min-width:0}
+.centro{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;
+  font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.sh-top h1{margin:0;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:27px;font-weight:700;line-height:1.05;letter-spacing:-.005em}
+.sh-top p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+.qr{flex:0 0 auto;width:74px;height:74px;border:1.5px dashed var(--hairline-2);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:"IBM Plex Mono",monospace;font-size:8.5px;line-height:1.25;color:var(--muted);padding:5px}
+
+/* regla de oro */
+.oro{border:2.5px solid var(--stop);background:var(--stop-soft);border-radius:9px;
+  padding:12px 15px;margin-bottom:16px}
+.oro .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--stop);font-weight:600;margin-bottom:5px}
+.oro p{margin:0;font-size:18px;font-weight:700;line-height:1.32;color:var(--ink)}
+.oro small{display:block;margin-top:6px;font-size:13px;font-weight:400;color:var(--ink-2);line-height:1.4}
+
+/* bomba fijada */
+.bomba{display:flex;gap:12px;align-items:center;background:var(--accent-soft);
+  border:1.5px solid var(--accent);border-radius:9px;padding:11px 15px;margin-bottom:16px;flex-wrap:wrap}
+.bomba .l{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;
+  font-size:14px;color:var(--accent-ink);letter-spacing:.02em}
+.bomba .line{flex:1;min-width:110px;border-bottom:2px solid var(--accent);height:22px}
+.bomba small{flex:0 0 100%;font-size:12.5px;color:var(--accent-ink);margin-top:2px}
+
+h2.sec{margin:0 0 8px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* tabla principal */
+.tbl-wrap{overflow-x:auto;margin-bottom:16px}
+table.main{border-collapse:collapse;width:100%;font-size:16px}
+table.main th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;
+  padding:6px 10px;border-bottom:2px solid var(--hairline-2);white-space:nowrap}
+table.main td{padding:9px 10px;border-bottom:1px solid var(--hairline);vertical-align:middle}
+table.main tr:last-child td{border-bottom:0}
+td.glu{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:16px;white-space:nowrap;
+  font-variant-numeric:tabular-nums;width:31%}
+td.acc{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15.5px;
+  color:var(--accent-ink);white-space:nowrap}
+td.av{width:1%;white-space:nowrap;text-align:right}
+.bell{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:700;font-size:11.5px;
+  letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
+.bell.w{color:var(--warn);background:var(--warn-soft)}
+.bell.s{color:#fff;background:var(--stop)}
+tr.zw{background:var(--warn-soft)} tr.zs{background:var(--stop-soft)}
+
+/* dos columnas */
+.cols{display:grid;gap:16px;margin-bottom:16px}
+@media (min-width:660px){.cols{grid-template-columns:1fr 1fr}}
+.box{border:1px solid var(--hairline-2);border-radius:9px;padding:12px 14px;background:var(--surface)}
+.box.hueco{border-color:var(--warn);border-width:2px;background:var(--warn-soft)}
+.box h3{margin:0 0 8px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:14.5px;font-weight:700}
+.box ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:5px}
+.box li{font-size:13.5px;line-height:1.4}
+.box li b{font-weight:600}
+
+/* ECG */
+.ecg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:9px}
+.ecg figure{margin:0;text-align:center}
+.ecg svg{width:100%;height:44px;display:block}
+.ecg figcaption{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:11.5px;font-weight:600;margin-top:3px;line-height:1.2}
+.ecg .ok{color:var(--go)} .ecg .bad{color:var(--stop)}
+
+footer.sh{border-top:1px solid var(--hairline);margin-top:14px;padding-top:9px;
+  font-size:10.5px;color:var(--muted);line-height:1.45}
+footer.sh b{color:var(--ink-2)}
+
+/* ---------- IMPRESIÓN A4 ---------- */
+@media print{
+  @page{size:A4;margin:9mm}
+  .bar,.noprint{display:none!important}
+  body{background:#fff;color:#000;font-size:9.5pt;line-height:1.32}
+  .page-wrap{max-width:none;padding:0}
+  .sheet{border:0;box-shadow:none;padding:0;background:#fff}
+
+  .sh-top{padding-bottom:7px;margin-bottom:9px;border-bottom-width:2pt}
+  .sh-top h1{font-size:18.5pt;line-height:1}
+  .centro{font-size:8.5pt;margin-bottom:1px}
+  .sh-top p{font-size:8.5pt;margin-top:2px}
+  .qr{width:58px;height:58px;font-size:6.5pt}
+
+  .oro{padding:8px 11px;margin-bottom:9px;border-color:#000;background:#fff;border-width:2pt}
+  .oro .lbl{color:#000;font-size:7.5pt;margin-bottom:2px}
+  .oro p{font-size:12pt;line-height:1.22}
+  .oro small{font-size:8pt;margin-top:3px;line-height:1.3}
+
+  .bomba{padding:7px 11px;margin-bottom:9px;background:#fff;border-color:#000;gap:9px}
+  .bomba .l{font-size:10pt} .bomba .line{height:15px} .bomba small{font-size:7.5pt;margin-top:0}
+
+  h2.sec{font-size:8pt;margin-bottom:4px}
+  .tbl-wrap{margin-bottom:9px}
+  table.main{font-size:10.5pt}
+  table.main th{font-size:7pt;padding:3px 7px}
+  table.main td{padding:4.5px 7px}
+  td.glu{font-size:10.5pt} td.acc{font-size:10pt;color:#000}
+  tr.zw,tr.zs{background:#fff!important}
+  .bell{font-size:7.5pt;padding:1.5px 6px}
+  .bell.s{background:#000;color:#fff} .bell.w{background:#fff;color:#000;border:.8pt solid #000}
+
+  .cols{grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+  .box{padding:7px 10px;border-color:#666}
+  .box h3{font-size:10pt;margin-bottom:4px}
+  .box ul{padding-left:13px;gap:2.5px}
+  .box li{font-size:8.3pt;line-height:1.28}
+
+  .box.hueco{background:#fff;border-color:#000;border-width:1.5pt;padding:8px 11px;margin-bottom:8px!important}
+  .box.hueco p{font-size:8.3pt!important;line-height:1.3!important}
+  .ecg{gap:6px;margin-top:5px}
+  .ecg svg{height:30px}
+  .ecg figcaption{font-size:7.8pt;margin-top:1px}
+  .ecg .bad{color:#000} .ecg .ok{color:#000}
+
+  footer.sh{font-size:6.6pt;margin-top:8px;padding-top:5px;line-height:1.35;gap:2px}
+  a{color:#000;text-decoration:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Hoja de enfermería</b>
+  <div class="chips" role="group" aria-label="Elegir centro">
+    <button class="chip" data-c="hnc" aria-pressed="true" type="button">Clínicas</button>
+    <button class="chip" data-c="unq" aria-pressed="false" type="button">Unquillo</button>
+    <button class="chip" data-c="pun" aria-pressed="false" type="button">Punilla</button>
+    <button class="chip" data-c="agr" aria-pressed="false" type="button">Alta Gracia</button>
+  </div>
+  <button class="btn" id="print" type="button">Imprimir A4</button>
+</div></div>
+
+<div class="page-wrap"><div class="sheet">
+
+  <div class="sh-top">
+    <div class="t">
+      <div class="centro" id="centro">Hospital Nacional de Clínicas · Terapia Intensiva</div>
+      <h1>Bomba de insulina en crisis hiperglucémica</h1>
+      <p>Cetoacidosis diabética y estado hiperosmolar · Hoja de enfermería</p>
+    </div>
+    <div class="qr" style="border:0;padding:0;width:82px;height:82px;display:flex;flex-direction:column;gap:2px"><svg style="width:100%;height:100%;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" shape-rendering="crispEdges" role="img" aria-label="Codigo QR"><rect width="33" height="33" fill="#fff"/><path d="M2 2h7v1h-7zM10 2h6v1h-6zM19 2h4v1h-4zM24 2h7v1h-7zM2 3h1v1h-1zM8 3h1v1h-1zM10 3h4v1h-4zM15 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM30 3h1v1h-1zM2 4h1v1h-1zM4 4h3v1h-3zM8 4h1v1h-1zM11 4h1v1h-1zM15 4h3v1h-3zM20 4h3v1h-3zM24 4h1v1h-1zM26 4h3v1h-3zM30 4h1v1h-1zM2 5h1v1h-1zM4 5h3v1h-3zM8 5h1v1h-1zM10 5h3v1h-3zM15 5h2v1h-2zM19 5h2v1h-2zM24 5h1v1h-1zM26 5h3v1h-3zM30 5h1v1h-1zM2 6h1v1h-1zM4 6h3v1h-3zM8 6h1v1h-1zM11 6h1v1h-1zM13 6h1v1h-1zM16 6h3v1h-3zM21 6h1v1h-1zM24 6h1v1h-1zM26 6h3v1h-3zM30 6h1v1h-1zM2 7h1v1h-1zM8 7h1v1h-1zM11 7h1v1h-1zM14 7h1v1h-1zM20 7h2v1h-2zM24 7h1v1h-1zM30 7h1v1h-1zM2 8h7v1h-7zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM24 8h7v1h-7zM10 9h1v1h-1zM12 9h2v1h-2zM19 9h3v1h-3zM2 10h1v1h-1zM4 10h2v1h-2zM7 10h3v1h-3zM11 10h1v1h-1zM13 10h1v1h-1zM16 10h5v1h-5zM24 10h1v1h-1zM27 10h1v1h-1zM29 10h2v1h-2zM4 11h1v1h-1zM6 11h2v1h-2zM9 11h2v1h-2zM12 11h1v1h-1zM18 11h1v1h-1zM21 11h2v1h-2zM24 11h3v1h-3zM30 11h1v1h-1zM2 12h2v1h-2zM5 12h2v1h-2zM8 12h2v1h-2zM12 12h3v1h-3zM16 12h1v1h-1zM19 12h2v1h-2zM28 12h2v1h-2zM3 13h2v1h-2zM7 13h1v1h-1zM11 13h2v1h-2zM14 13h4v1h-4zM20 13h4v1h-4zM30 13h1v1h-1zM2 14h1v1h-1zM7 14h3v1h-3zM12 14h2v1h-2zM15 14h2v1h-2zM19 14h1v1h-1zM22 14h1v1h-1zM27 14h2v1h-2zM2 15h2v1h-2zM6 15h2v1h-2zM9 15h1v1h-1zM13 15h1v1h-1zM16 15h2v1h-2zM20 15h2v1h-2zM23 15h2v1h-2zM28 15h3v1h-3zM2 16h1v1h-1zM5 16h2v1h-2zM8 16h1v1h-1zM10 16h1v1h-1zM15 16h2v1h-2zM18 16h1v1h-1zM21 16h6v1h-6zM28 16h3v1h-3zM2 17h2v1h-2zM5 17h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM14 17h1v1h-1zM20 17h2v1h-2zM23 17h1v1h-1zM26 17h1v1h-1zM29 17h1v1h-1zM2 18h1v1h-1zM6 18h4v1h-4zM12 18h1v1h-1zM14 18h3v1h-3zM22 18h2v1h-2zM25 18h3v1h-3zM29 18h1v1h-1zM3 19h1v1h-1zM6 19h1v1h-1zM10 19h1v1h-1zM13 19h2v1h-2zM17 19h1v1h-1zM19 19h1v1h-1zM22 19h2v1h-2zM25 19h1v1h-1zM27 19h3v1h-3zM2 20h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM8 20h6v1h-6zM15 20h5v1h-5zM22 20h2v1h-2zM28 20h1v1h-1zM5 21h1v1h-1zM9 21h6v1h-6zM18 21h2v1h-2zM22 21h1v1h-1zM24 21h2v1h-2zM28 21h1v1h-1zM3 22h3v1h-3zM7 22h2v1h-2zM12 22h1v1h-1zM15 22h1v1h-1zM19 22h10v1h-10zM10 23h1v1h-1zM12 23h2v1h-2zM15 23h1v1h-1zM18 23h1v1h-1zM20 23h1v1h-1zM22 23h1v1h-1zM26 23h5v1h-5zM2 24h7v1h-7zM10 24h4v1h-4zM15 24h1v1h-1zM20 24h3v1h-3zM24 24h1v1h-1zM26 24h2v1h-2zM29 24h1v1h-1zM2 25h1v1h-1zM8 25h1v1h-1zM10 25h1v1h-1zM13 25h1v1h-1zM18 25h1v1h-1zM20 25h1v1h-1zM22 25h1v1h-1zM26 25h2v1h-2zM29 25h2v1h-2zM2 26h1v1h-1zM4 26h3v1h-3zM8 26h1v1h-1zM11 26h2v1h-2zM14 26h1v1h-1zM16 26h1v1h-1zM19 26h1v1h-1zM22 26h5v1h-5zM28 26h3v1h-3zM2 27h1v1h-1zM4 27h3v1h-3zM8 27h1v1h-1zM10 27h3v1h-3zM16 27h3v1h-3zM23 27h1v1h-1zM26 27h2v1h-2zM30 27h1v1h-1zM2 28h1v1h-1zM4 28h3v1h-3zM8 28h1v1h-1zM10 28h1v1h-1zM12 28h3v1h-3zM18 28h1v1h-1zM25 28h1v1h-1zM28 28h1v1h-1zM30 28h1v1h-1zM2 29h1v1h-1zM8 29h1v1h-1zM15 29h1v1h-1zM17 29h2v1h-2zM22 29h1v1h-1zM24 29h1v1h-1zM26 29h2v1h-2zM29 29h1v1h-1zM2 30h7v1h-7zM10 30h3v1h-3zM14 30h2v1h-2zM18 30h1v1h-1zM20 30h5v1h-5zM29 30h1v1h-1z" fill="#000"/></svg><span style="font-family:'IBM Plex Mono',monospace;font-size:6.5px;letter-spacing:.02em;color:#000;text-align:center;line-height:1.1">drcastrofacundo-ux.github.io/cad</span></div>
+  </div>
+
+  <div class="oro">
+    <div class="lbl">Regla de oro</div>
+    <p>La bomba de insulina NO se apaga nunca. Si baja el azúcar, se SUBE la dextrosa.</p>
+    <small>Apagar la insulina hace que el paciente vuelva a producir cetonas y se empieza todo de nuevo. La bomba sólo la cambia el médico.</small>
+  </div>
+
+  <div class="bomba">
+    <span class="l">Bomba fijada por el médico en:</span>
+    <span class="line"></span>
+    <span class="l">mL/h</span>
+    <small>Este número lo escribe el médico al ingreso y no se modifica salvo indicación médica.</small>
+  </div>
+
+  <h2 class="sec">Qué cuelgo según el hemoglucotest</h2>
+  <div class="tbl-wrap"><table class="main">
+    <thead><tr><th>Glucemia (mg/dL)</th><th>Dextrosa</th><th></th></tr></thead>
+    <tbody>
+      <tr><td class="glu">más de 300</td><td class="acc">Dx 5 % a 50 mL/h</td><td class="av"></td></tr>
+      <tr><td class="glu">250 a 300</td><td class="acc">Dx 5 % a 100 mL/h</td><td class="av"></td></tr>
+      <tr><td class="glu">180 a 250</td><td class="acc">Dx 10 % a 75 mL/h</td><td class="av"></td></tr>
+      <tr class="zw"><td class="glu">120 a 180</td><td class="acc">Dx 10 % a 100 mL/h</td><td class="av"><span class="bell w">Avisar</span></td></tr>
+      <tr class="zw"><td class="glu">70 a 120</td><td class="acc">Dx 10 % a 150 mL/h</td><td class="av"><span class="bell w">Avisar</span></td></tr>
+      <tr class="zs"><td class="glu">menos de 70</td><td class="acc">Dx 25 % 50 mL en bolo</td><td class="av"><span class="bell s">Avisar ya</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cols">
+    <div class="box">
+      <h3>Controles</h3>
+      <ul>
+        <li><b>Hemoglucotest cada 1 hora.</b> Si el médico lo indica, cada 30 minutos.</li>
+        <li><b>Diuresis y balance cada 1 hora.</b> Anotar siempre, aunque parezca poco.</li>
+        <li><b>Signos vitales cada 1 hora.</b></li>
+        <li><b>Estado de conciencia cada 1 hora:</b> si contesta, si está orientada, si le duele la cabeza.</li>
+        <li id="ctrl-ecg" style="display:none"><b>Mirar el monitor cada 1 hora</b> buscando los cambios del recuadro de abajo.</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h3>Avisar al médico si</h3>
+      <ul>
+        <li>El hemoglucotest da <b>menos de 150</b></li>
+        <li>Bajó <b>más de 100 mg/dL en una hora</b></li>
+        <li>Hay que pasar de <b>100 mL/h de dextrosa</b></li>
+        <li>Orina <b>menos de 30 mL por hora</b></li>
+        <li>Se pone <b>somnolienta, con dolor de cabeza, o vuelve a vomitar</b></li>
+        <li>Se termina el frasco y <b>no hay indicación escrita</b> de qué sigue</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="box hueco" id="hueco" style="display:none;margin-bottom:16px">
+    <h3>De 22 a 06 h — vigilancia del potasio por monitor</h3>
+    <p style="margin:0 0 4px;font-size:13.5px;line-height:1.45">En ese horario no hay control de laboratorio. <b>El monitor es la única forma de ver si el potasio está bajando.</b> Mirá el trazado cada hora y compará con estos tres:</p>
+    <div class="ecg">
+      <figure>
+        <svg viewBox="0 0 120 40" aria-label="Trazado normal"><path d="M2 28 L18 28 L22 24 L26 28 L34 28 L38 8 L42 34 L46 28 L58 28 Q66 14 74 28 L118 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <figcaption class="ok">Normal · onda T redondeada</figcaption>
+      </figure>
+      <figure>
+        <svg viewBox="0 0 120 40" aria-label="Onda T aplanada con onda U"><path d="M2 28 L18 28 L22 24 L26 28 L34 28 L38 8 L42 34 L46 28 L58 28 Q64 24 70 28 Q78 16 86 28 L118 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <figcaption class="bad">T aplanada + onda U · AVISAR</figcaption>
+      </figure>
+      <figure>
+        <svg viewBox="0 0 120 40" aria-label="QT alargado"><path d="M2 28 L14 28 L18 24 L22 28 L30 28 L34 8 L38 34 L42 28 L70 28 Q82 14 94 28 L118 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <figcaption class="bad">QT alargado · AVISAR</figcaption>
+      </figure>
+    </div>
+    <p style="margin:9px 0 0;font-size:13.5px;line-height:1.45"><b>Cualquiera de los dos de la derecha, o una arritmia nueva: avisá al médico enseguida.</b> No esperes al control de la mañana.</p>
+  </div>
+
+  <footer class="sh">
+    <div><b>Protocolo de Crisis Hiperglucémicas — Cetoacidosis Diabética y Estado Hiperosmolar.</b> Redacción: Dr. Facundo Agustín Castro. Versión 0.3, agosto 2026. Próxima revisión obligatoria: agosto 2027.</div>
+    <div><b>Bibliografía:</b> Umpierrez GE, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024;47(8):1257–1275. PMID 39052901. · American Diabetes Association. 16. Diabetes Care in the Hospital: Standards of Care in Diabetes—2026. Diabetes Care 2026;49(Suppl 1):S339. PMID 41358892. · Glaser N, et al. ISPAD Clinical Practice Consensus Guidelines 2022. Pediatr Diabetes 2022;23(7):835–856. PMID 36250645.</div>
+    <div id="pie-centro"></div>
+  </footer>
+
+</div></div>
+
+<script>
+(function(){
+  var CENTROS = {
+    hnc:{n:'Hospital Nacional de Clínicas · Terapia Intensiva', hueco:false,
+         pie:'Laboratorio disponible cada 4 horas las 24 horas.'},
+    unq:{n:'Hospital de Unquillo · Terapia Intensiva', hueco:false,
+         pie:'Laboratorio disponible cada 4 horas las 24 horas.'},
+    pun:{n:'Sanatorio Punilla · Terapia Intensiva', hueco:true,
+         pie:'Laboratorio con horario nocturno restringido: último control 22 h, siguiente 05 a 06 h. En ese intervalo rige la vigilancia por monitor.'},
+    agr:{n:'Clínica Santa María, Alta Gracia · Terapia Intensiva', hueco:true,
+         pie:'Laboratorio con horario nocturno restringido: último control 22 h, siguiente 05 a 06 h. En ese intervalo rige la vigilancia por monitor.'}
+  };
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var elC = document.getElementById('centro');
+  var elH = document.getElementById('hueco');
+  var elE = document.getElementById('ctrl-ecg');
+  var elP = document.getElementById('pie-centro');
+
+  function set(k){
+    var c = CENTROS[k]; if(!c) return;
+    elC.textContent = c.n;
+    elH.style.display = c.hueco ? '' : 'none';
+    elE.style.display = c.hueco ? '' : 'none';
+    elP.textContent = c.pie;
+    chips.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-c')===k)); });
+    try{ localStorage.setItem('hoja-centro', k); }catch(e){}
+  }
+  chips.forEach(function(b){ b.addEventListener('click', function(){ set(b.getAttribute('data-c')); }); });
+  document.getElementById('print').addEventListener('click', function(){ window.print(); });
+
+  var saved=null;
+  try{ saved = localStorage.getItem('hoja-centro'); }catch(e){}
+  set(saved && CENTROS[saved] ? saved : 'hnc');
+})();
+</script>

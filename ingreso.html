@@ -1,0 +1,514 @@
+<title>Ingreso de Crisis Hiperglucémica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F4F6F8;--surface:#FFFFFF;--surface-2:#EDF1F4;
+  --ink:#0E141A;--ink-2:#3C4A57;--muted:#68788A;
+  --hairline:#D6DEE5;--hairline-2:#B9C6D1;
+  --accent:#0A6480;--accent-soft:#E1F0F5;--accent-ink:#064B61;
+  --stop:#B31F35;--stop-soft:#FBE7EA;
+  --warn:#9C6100;--warn-soft:#FBF0DC;
+  --go:#11694E;--go-soft:#E0F2EA;
+  --shadow:0 1px 2px rgba(14,20,26,.06),0 6px 18px -10px rgba(14,20,26,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0A0F14;--surface:#121A21;--surface-2:#1A242D;
+  --ink:#E7EEF4;--ink-2:#B7C4D0;--muted:#8496A6;
+  --hairline:#222F3A;--hairline-2:#2E3E4B;
+  --accent:#41B9DC;--accent-soft:#10303C;--accent-ink:#8FD8EE;
+  --stop:#FF7186;--stop-soft:#3A1219;--warn:#E8A63F;--warn-soft:#372511;
+  --go:#43D19D;--go-soft:#0E3227;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --ground:#0A0F14;--surface:#121A21;--surface-2:#1A242D;
+  --ink:#E7EEF4;--ink-2:#B7C4D0;--muted:#8496A6;
+  --hairline:#222F3A;--hairline-2:#2E3E4B;
+  --accent:#41B9DC;--accent-soft:#10303C;--accent-ink:#8FD8EE;
+  --stop:#FF7186;--stop-soft:#3A1219;--warn:#E8A63F;--warn-soft:#372511;
+  --go:#43D19D;--go-soft:#0E3227;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.45;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:0 13px 70px}
+
+.bar{position:sticky;top:0;z-index:50;background:var(--surface);
+  border-bottom:1px solid var(--hairline);box-shadow:var(--shadow)}
+.bar-in{max-width:880px;margin:0 auto;padding:9px 13px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.bar-in>b{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:16px;
+  margin-right:auto;line-height:1.15}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:600;font-size:12.5px;
+  padding:6px 11px;border-radius:20px;cursor:pointer;background:var(--surface-2);color:var(--ink-2);
+  border:1px solid var(--hairline-2)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hueco-alert{margin-top:14px;padding:11px 14px;border-radius:9px;border:2px solid var(--warn);
+  background:var(--warn-soft);font-size:14px;line-height:1.45}
+.hueco-alert b{color:var(--warn)}
+.hueco-alert[hidden]{display:none}
+
+section{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;
+  box-shadow:var(--shadow);margin-top:15px;overflow:hidden}
+.s-hd{display:flex;gap:9px;align-items:baseline;padding:10px 14px;background:var(--surface-2);
+  border-bottom:1px solid var(--hairline)}
+.s-n{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:12px;color:var(--surface);
+  background:var(--accent);padding:2px 7px;border-radius:5px;flex:0 0 auto}
+.s-hd h2{margin:0;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:18px;font-weight:700;flex:1}
+.s-body{padding:13px 14px;display:flex;flex-direction:column;gap:13px}
+
+.grid{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(112px,1fr))}
+label.f{display:flex;flex-direction:column;gap:3px}
+label.f span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);font-weight:500}
+label.f input,label.f select{padding:8px 9px;font-family:"IBM Plex Mono",monospace;font-size:16px;
+  font-weight:600;color:var(--ink);background:var(--surface-2);border:1.5px solid var(--hairline-2);
+  border-radius:7px;width:100%;font-variant-numeric:tabular-nums}
+label.f input:focus-visible,label.f select:focus-visible{outline:2px solid var(--accent);
+  outline-offset:1px;border-color:var(--accent)}
+label.f.off{opacity:.4;pointer-events:none}
+
+.verdict{border-radius:9px;padding:14px 15px;border:2px solid var(--hairline-2);background:var(--surface-2)}
+.verdict .lbl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
+.verdict .big{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:26px;
+  font-weight:700;line-height:1.1;text-wrap:balance}
+.verdict p{margin:7px 0 0;font-size:14px;line-height:1.45;color:var(--ink-2)}
+.verdict.cad{border-color:var(--stop);background:var(--stop-soft)} .verdict.cad .big{color:var(--stop)}
+.verdict.ehh{border-color:var(--warn);background:var(--warn-soft)} .verdict.ehh .big{color:var(--warn)}
+.verdict.simple{border-color:var(--go);background:var(--go-soft)} .verdict.simple .big{color:var(--go)}
+.verdict.prob{border-color:var(--stop);background:var(--stop-soft)} .verdict.prob .big{color:var(--stop)}
+.ddx{margin-top:9px;padding:9px 11px;border-radius:7px;background:var(--surface);
+  border:1px dashed var(--hairline-2);font-size:13px;line-height:1.45;color:var(--ink-2)}
+.ddx b{color:var(--ink)}
+.ddx[hidden]{display:none}
+
+.calc{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(126px,1fr))}
+.cell{background:var(--surface-2);border:1px solid var(--hairline);border-radius:8px;padding:8px 10px}
+.cell .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+.cell .v{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:19px;
+  font-variant-numeric:tabular-nums;color:var(--accent-ink);line-height:1.15}
+.cell .n{font-size:11.5px;color:var(--muted);display:block;margin-top:2px;line-height:1.3}
+.cell.alto .v{color:var(--stop)} .cell.ok .v{color:var(--go)}
+
+.rx{border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:9px;padding:12px 14px}
+.rx h3{margin:0 0 8px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.rx dl{margin:0;display:flex;flex-direction:column;gap:7px}
+.rx .row{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;
+  padding-bottom:7px;border-bottom:1px dashed var(--hairline-2)}
+.rx .row:last-child{border-bottom:0;padding-bottom:0}
+.rx dt{font-weight:600;font-size:14px;flex:1 1 140px;min-width:0}
+.rx dd{margin:0;font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:16px;
+  color:var(--accent-ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rx dd.warn{color:var(--stop)}
+
+ul.ck{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+ul.ck li{border-bottom:1px solid var(--hairline)}
+ul.ck li:last-child{border-bottom:0}
+ul.ck label{display:flex;gap:10px;padding:9px 2px;align-items:flex-start;cursor:pointer}
+ul.ck input{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:19px;height:19px;margin:1px 0 0;
+  border:1.6px solid var(--hairline-2);border-radius:5px;background:var(--surface);
+  cursor:pointer;position:relative}
+ul.ck input:checked{background:var(--go);border-color:var(--go)}
+ul.ck input:checked::after{content:"";position:absolute;left:5.5px;top:2px;width:5px;height:10px;
+  border:solid var(--surface);border-width:0 2.3px 2.3px 0;transform:rotate(43deg)}
+ul.ck input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+ul.ck .t{flex:1;min-width:0;font-size:14.5px;line-height:1.35}
+ul.ck .t small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px;line-height:1.35}
+ul.ck input:checked~.t{opacity:.45;text-decoration:line-through}
+ul.ck input:checked~.t small{text-decoration:none}
+
+pre.out{margin:0;padding:11px 12px;background:var(--surface-2);border:1px solid var(--hairline);
+  border-radius:8px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;
+  color:var(--ink-2);white-space:pre-wrap;overflow-x:auto;max-height:290px;overflow-y:auto}
+.btn{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:600;font-size:13px;
+  padding:8px 13px;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;border:0}
+.btn.alt{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--hairline-2)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+
+footer{margin-top:26px;padding-top:13px;border-top:1px solid var(--hairline);
+  font-size:11.5px;color:var(--muted);line-height:1.5;display:flex;flex-direction:column;gap:5px}
+footer b{color:var(--ink-2)}
+
+@media print{
+  @page{size:A4;margin:11mm}
+  .bar,.btns,.noprint{display:none!important}
+  body{background:#fff;color:#000;font-size:10pt}
+  .wrap{max-width:none;padding:0}
+  section{border:1px solid #666;box-shadow:none;margin-top:7px;break-inside:avoid}
+  .s-hd{background:#fff;border-bottom:1px solid #666}
+  .s-n{background:#000}
+  .verdict,.rx,.cell{background:#fff!important;border-color:#000}
+  .verdict .big,.cell .v,.rx dd,.rx dd.warn{color:#000}
+  pre.out{background:#fff;border-color:#666;max-height:none}
+  label.f input,label.f select{background:#fff;border-color:#666}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Ingreso de crisis hiperglucémica</b>
+  <div class="chips" role="group" aria-label="Centro">
+    <button class="chip" data-c="hnc" aria-pressed="true" type="button">Clínicas</button>
+    <button class="chip" data-c="unq" aria-pressed="false" type="button">Unquillo</button>
+    <button class="chip" data-c="pun" aria-pressed="false" type="button">Punilla</button>
+    <button class="chip" data-c="agr" aria-pressed="false" type="button">Alta Gracia</button>
+  </div>
+  <button class="btn alt" id="reset" type="button">Nuevo paciente</button>
+</div></div>
+
+<div class="wrap">
+
+<div class="hueco-alert" id="huecoBox" hidden></div>
+
+<section>
+  <div class="s-hd"><span class="s-n">1</span><h2>¿Qué tiene realmente?</h2></div>
+  <div class="s-body">
+    <div class="grid">
+      <label class="f"><span>Glucemia mg/dL</span><input id="glu" type="number" inputmode="decimal" min="0"></label>
+      <label class="f"><span>pH</span><input id="ph" type="number" inputmode="decimal" step="0.01" min="6" max="8"></label>
+      <label class="f"><span>Bicarbonato</span><input id="hco3" type="number" inputmode="decimal" step="0.1" min="0"></label>
+      <label class="f"><span>Sodio</span><input id="na" type="number" inputmode="decimal" step="0.1"></label>
+      <label class="f" id="lblCl"><span>Cloro</span><input id="cl" type="number" inputmode="decimal" step="0.1"></label>
+      <label class="f"><span>Urea mg/dL</span><input id="urea" type="number" inputmode="decimal"></label>
+      <label class="f"><span>Cetonuria</span><select id="ceto">
+        <option value="">—</option><option value="0">Negativa</option><option value="1">1 cruz</option>
+        <option value="2">2 cruces</option><option value="3">3 cruces</option><option value="4">4 cruces</option>
+      </select></label>
+      <label class="f"><span>¿Diabetes conocida?</span><select id="dm">
+        <option value="1">Sí</option><option value="0">No</option></select></label>
+    </div>
+
+    <div class="verdict" id="verdict">
+      <div class="lbl">Diagnóstico</div>
+      <div class="big" id="vBig">Cargá los valores</div>
+      <p id="vTxt">Con glucemia, pH, bicarbonato y cetonuria alcanza para decidir la rama.</p>
+      <div class="ddx" id="ddx" hidden></div>
+    </div>
+
+    <div class="calc" id="calc"></div>
+  </div>
+</section>
+
+<section id="secRx">
+  <div class="s-hd"><span class="s-n">2</span><h2>Peso y prescripción</h2></div>
+  <div class="s-body">
+    <div class="grid">
+      <label class="f"><span>Peso kg</span><input id="peso" type="number" inputmode="decimal" min="20" max="250"></label>
+      <label class="f"><span>Edad años</span><input id="edad" type="number" inputmode="numeric" min="15" max="110"></label>
+      <label class="f"><span>Cardiópata o renal</span><select id="riesgo">
+        <option value="0">No</option><option value="1">Sí</option></select></label>
+      <label class="f"><span>Potasio</span><input id="k" type="number" inputmode="decimal" step="0.1"></label>
+    </div>
+    <div class="rx" id="rx"><h3>Prescripción</h3><dl id="rxList"><div class="row"><dt>Cargá peso y potasio</dt></div></dl></div>
+  </div>
+</section>
+
+<section>
+  <div class="s-hd"><span class="s-n">3</span><h2>Checklist de ingreso</h2></div>
+  <div class="s-body">
+    <ul class="ck" id="ckList"></ul>
+  </div>
+</section>
+
+<section>
+  <div class="s-hd"><span class="s-n">4</span><h2>Constancia para la historia clínica</h2></div>
+  <div class="s-body">
+    <pre class="out" id="nota"></pre>
+    <div class="btns noprint">
+      <button class="btn" id="copy" type="button">Copiar texto</button>
+      <button class="btn alt" id="print" type="button">Imprimir A4</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><b>Protocolo de Crisis Hiperglucémicas — Cetoacidosis Diabética y Estado Hiperosmolar.</b> Redacción: Dr. Facundo Agustín Castro. Versión 0.3, agosto 2026. Próxima revisión obligatoria: agosto 2027.</div>
+  <div><b>Umpierrez GE, et al.</b> Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024;47(8):1257–1275. PMID 39052901. DOI 10.2337/dci24-0032.</div>
+  <div><b>American Diabetes Association.</b> 16. Diabetes Care in the Hospital: Standards of Care in Diabetes—2026. Diabetes Care 2026;49(Suppl 1):S339. PMID 41358892. DOI 10.2337/dc26-S016.</div>
+  <div><b>Glaser N, et al.</b> ISPAD Clinical Practice Consensus Guidelines 2022: DKA and HHS. Pediatr Diabetes 2022;23(7):835–856. PMID 36250645.</div>
+</footer>
+</div>
+
+<script>
+(function(){
+var C={
+ hnc:{n:'Hospital Nacional de Clínicas',cl:true,mg:true,fp:true,hueco:false},
+ unq:{n:'Hospital de Unquillo',cl:true,mg:true,fp:true,hueco:false},
+ pun:{n:'Sanatorio Punilla',cl:true,mg:false,fp:false,hueco:true},
+ agr:{n:'Clínica Santa María, Alta Gracia',cl:false,mg:false,fp:true,hueco:true}
+};
+var centro='hnc', modoHueco=false;
+var $=function(i){return document.getElementById(i)};
+var num=function(i){var v=parseFloat($(i).value);return isFinite(v)?v:null};
+var f=function(n,d){return n==null?'—':n.toFixed(d===undefined?1:d).replace('.',',')};
+
+function horaHueco(){
+  var h=new Date().getHours();
+  return h>=22||h<5;
+}
+
+function franja(p){
+  if(p<60)return 55; if(p<70)return 65; if(p<80)return 75; if(p<90)return 85;
+  if(p<100)return 95; if(p<110)return 105; return 115;
+}
+function rama(edad,riesgo){
+  if(edad!=null&&edad<19)return 'A';
+  if(riesgo===1||(edad!=null&&edad>65))return 'C';
+  return 'B';
+}
+
+function calcular(){
+  var glu=num('glu'),ph=num('ph'),hco3=num('hco3'),na=num('na'),cl=num('cl'),
+      urea=num('urea'),ceto=$('ceto').value===''?null:parseInt($('ceto').value,10),
+      dm=parseInt($('dm').value,10);
+  var tieneCl=C[centro].cl;
+
+  var ag=(na!=null&&cl!=null&&hco3!=null)?na-(cl+hco3):null;
+  var dd=(ag!=null&&hco3!=null&&hco3<24)?(ag-12)/(24-hco3):null;
+  var nac=(na!=null&&glu!=null)?na+2.4*(glu-100)/100:null;
+  var osme=(na!=null&&glu!=null)?2*na+glu/18:null;
+  var osmt=(osme!=null&&urea!=null)?osme+urea/2.8:null;
+  var win=(hco3!=null)?1.5*hco3+8:null;
+
+  // celdas
+  var cells=[];
+  if(tieneCl) cells.push(['Anion gap',f(ag),ag!=null&&ag>12?'alto':'ok','Na − (Cl + HCO3)']);
+  else cells.push(['Anion gap','no calc.','','sin cloro en este centro']);
+  if(dd!=null) cells.push(['Delta-delta',f(dd,2),'',dd<0.8?'hiperclorémica agregada':(dd>1.2?'otro ácido o alcalosis':'AG elevado puro')]);
+  if(nac!=null) cells.push(['Na corregido',f(nac),nac>145?'alto':'','Na + 2,4 x (glu−100)/100']);
+  if(osme!=null) cells.push(['Osm efectiva',f(osme),osme>300?'alto':'','2 x Na + glu/18']);
+  if(osmt!=null) cells.push(['Osm total',f(osmt),osmt>320?'alto':'','+ urea/2,8']);
+  if(win!=null) cells.push(['pCO2 esperada',f(win-2,0)+' a '+f(win+2,0),'','fórmula de Winter']);
+  $('calc').innerHTML=cells.map(function(c){
+    return '<div class="cell '+(c[2]||'')+'"><span class="k">'+c[0]+'</span><span class="v">'+c[1]+'</span><span class="n">'+c[3]+'</span></div>';
+  }).join('');
+
+  // verdicto
+  var v=$('verdict'),big=$('vBig'),txt=$('vTxt'),dx='';
+  v.className='verdict';
+  var ddx=$('ddx'); ddx.hidden=true; ddx.innerHTML='';
+  var hayDatos=(glu!=null&&ph!=null&&hco3!=null);
+  if(!hayDatos){
+    big.textContent='Cargá los valores';
+    txt.textContent='Con glucemia, pH y bicarbonato ya se decide si hay acidosis. La cetonuria afina, no manda.';
+  } else {
+    var critGlu=(glu>=200||dm===1);
+    var hayAcidosis=(ph<7.30||hco3<18);
+    // sin cloro no hay AG: se usa el bicarbonato como sustituto
+    var agAlto = (ag!=null) ? (ag>12) : (hco3<15);
+    var sev = (ph<7.0||hco3<10)?'severa':((ph<7.25||hco3<15)?'moderada':'leve');
+    var esEHH=(glu>=600)&&(osme==null||osme>300)&&!hayAcidosis&&hco3>=15&&(ceto==null||ceto<2);
+
+    if(critGlu&&hayAcidosis&&ceto!=null&&ceto>=2){
+      dx='Cetoacidosis diabética '+sev; v.className='verdict cad';
+      big.textContent=dx;
+      txt.textContent = sev==='severa'
+        ? 'Bomba de insulina, sin excepción, aunque sea en modo hueco. Cuidados intensivos.'
+        : (modoHueco ? 'En modo hueco: insulina SUBCUTÁNEA con análogo rápido cada 1 a 2 horas, no bomba.' : 'Bomba de insulina.');
+
+    } else if(critGlu&&hayAcidosis&&agAlto){
+      dx='Cetoacidosis diabética '+sev+' (cetonuria no concluyente)';
+      v.className='verdict prob';
+      big.textContent='Cetoacidosis probable '+sev;
+      txt.innerHTML='<b>Se trata como cetoacidosis.</b> Hay acidosis metabólica con anion gap elevado e hiperglucemia. '+
+        'La cetonuria baja NO la descarta: la tira de nitroprusiato lee acetoacetato y no beta-hidroxibutirato, y cuanto más severa es la cetoacidosis, más se corre la relación hacia el beta-hidroxibutirato que la tira no ve.';
+      ddx.hidden=false;
+      ddx.innerHTML='<b>Antes de cerrar el diagnóstico, descartá las otras causas de anion gap alto:</b> '+
+        'acidosis láctica (sepsis, hipoperfusión, metformina) · uremia, sobre todo con urea elevada · '+
+        'intoxicación por metanol, etilenglicol o salicilatos · cetoacidosis alcohólica. '+
+        '<b>Pedí lactato si el centro lo tiene</b> y calculá el delta-delta: si es menor a 0,8 hay un componente hiperclorémico agregado.';
+
+    } else if(critGlu&&hayAcidosis&&!agAlto){
+      dx='Hiperglucemia con acidosis de anion gap normal';
+      v.className='verdict ehh'; big.textContent='Acidosis sin anion gap alto';
+      txt.textContent='Hay acidosis pero el anion gap es normal. Pensá en acidosis hiperclorémica (expansión previa con fisiológico), pérdidas digestivas o acidosis tubular renal. Evaluá si igual corresponde infusión según el cuadro clínico.';
+
+    } else if(esEHH){
+      dx='Estado hiperosmolar'; v.className='verdict ehh'; big.textContent='Estado hiperosmolar';
+      txt.textContent='Insulina a la mitad de dosis (0,05 U/kg/h). Corrección lenta: la osmolaridad no debe caer más de 3 mOsm/kg por hora.';
+
+    } else if(hayAcidosis){
+      dx='Acidosis metabólica sin criterio de hiperglucemia';
+      v.className='verdict ehh'; big.textContent='Acidosis, revisar causa';
+      txt.textContent='Hay acidosis pero no se cumple el criterio de hiperglucemia ni hay antecedente de diabetes. Buscá otra causa antes de aplicar este protocolo.';
+
+    } else {
+      dx='Hiperglucemia sin acidosis'; v.className='verdict simple'; big.textContent='Hiperglucemia sin acidosis';
+      txt.textContent='NO corresponde infusión de insulina ni necesariamente cama de UTI. Hidratación, insulina subcutánea, y buscar por qué se descompensó.';
+    }
+  }
+  return {glu:glu,ph:ph,hco3:hco3,na:na,cl:cl,ceto:ceto,ag:ag,dd:dd,nac:nac,osme:osme,osmt:osmt,dx:dx,tieneCl:tieneCl};
+}
+
+function prescribir(){
+  var p=num('peso'),edad=num('edad'),riesgo=parseInt($('riesgo').value,10),k=num('k');
+  var out=$('rxList');
+  if(p==null){ out.innerHTML='<div class="row"><dt>Cargá el peso</dt></div>'; return {}; }
+  var m=franja(p), r=rama(edad,riesgo);
+  var big=$('vBig').textContent;
+  var esEHH=big.indexOf('hiperosmolar')>=0;
+  var tasa = esEHH?0.05:0.1;
+  if(modoHueco && k!=null && k>=3.5 && k<4.5) tasa=0.05;
+  var ins=m*tasa;
+  if(ins<1) ins=1;
+  var bolo = r==='C'?250:(r==='A'?m*10:m*15);
+  var mant = r==='B'?(Math.round((m*80/48+(1500+20*(m-20))/24)/25)*25):(Math.round((m*80/48*0.7+(1500+20*(m-20))/24)/25)*25);
+
+  var kc='', kw=false;
+  if(k==null) kc='cargá el potasio';
+  else if(k<3.5){kc='NO ARRANCAR INSULINA · reponer 10 a 20 mEq/h primero';kw=true;}
+  else if(modoHueco&&k<4.5) kc='KCl 40 mEq/L desde el inicio';
+  else if(modoHueco&&k<5.5) kc='KCl 30 a 40 mEq/L';
+  else if(modoHueco) kc='KCl 20 mEq/L igual, si hay diuresis y creatinina normal';
+  else if(k<=5.2) kc='KCl 20 a 30 mEq/L';
+  else kc='sin KCl, control en 2 h';
+
+  var rows=[
+    ['Rama','<b>'+r+'</b> · '+(r==='A'?'15 a 18 años':(r==='C'?'mayor de 65 o comorbilidad':'adulto')),false],
+    ['Insulina, tasa fija',f(ins)+' mL/h',false],
+    ['Bolo inicial de Ringer',(r==='C'?'250 mL, reevaluando':f(bolo,0)+' mL'+(r==='A'?' sólo si hay shock':'')),false],
+    ['Ringer de mantenimiento',mant+' mL/h',false],
+    ['Potasio',kc,kw],
+    ['Magnesio','2 g EV en 30 min'+(C[centro].mg?'':' · empírico, no se mide acá'),false]
+  ];
+  out.innerHTML=rows.map(function(x){
+    return '<div class="row"><dt>'+x[0]+'</dt><dd class="'+(x[2]?'warn':'')+'">'+x[1]+'</dd></div>';
+  }).join('');
+  return {p:p,edad:edad,r:r,ins:ins,bolo:bolo,mant:mant,k:k,kc:kc};
+}
+
+var CK=[
+ ['Vía aérea y patrón respiratorio','Kussmaul presente indica que todavía compensa. Kussmaul que se apaga con paciente somnoliento es fatiga: no intubar salvo que no quede otra.'],
+ ['Glasgow, pupilas y perfusión periférica','Relleno capilar, temperatura de extremidades, moteado.'],
+ ['Peso real o estimado, anotado en la cama','Todas las dosis dependen de ese número.'],
+ ['ECG de 12 derivaciones','Signos de potasio y descarte de isquemia como precipitante.'],
+ ['Laboratorio obligatorio solicitado','EAB (gases en sangre) · Ionograma con sodio, potasio y CLORO · Glucemia · Hemograma · Urea y creatinina · Orina completa con cetonuria.'],
+ ['Laboratorio opcional, si el centro lo tiene','Lactato · Fósforo · Calcio iónico · Magnesio · PCR · Hepatograma · Troponina.'],
+ ['Buscar el precipitante','Infección, omisión de insulina, iSGLT2, corticoides, isquemia, embarazo. Revisar sitios de inyección: la lipohipertrofia es causa frecuente de CAD "sin explicación".'],
+ ['Purgar 20 mL del sistema antes de conectar la insulina','Se adsorbe al PVC del equipo: sin purgar se pierde entre 20 y 30 % de la dosis inicial.'],
+ ['Dejar escrito en la cama el ritmo de la bomba','El enfermero no calcula ni modifica ese número.'],
+ ['Hoja de enfermería colgada junto a la bomba',''],
+ ['Ayuno hasta la resolución','La dieta arranca junto con la transición a insulina subcutánea, no antes.']
+];
+function pintarCk(){
+  $('ckList').innerHTML=CK.map(function(c,i){
+    return '<li><label><input type="checkbox" data-i="'+i+'"><span class="t">'+c[0]+
+      (c[1]?'<small>'+c[1]+'</small>':'')+'</span></label></li>';
+  }).join('');
+  Array.prototype.forEach.call($('ckList').querySelectorAll('input'),function(b){
+    b.addEventListener('change',nota);
+  });
+}
+
+function nota(){
+  var d=calcular(), rx=prescribir();
+  var L=[], nom=C[centro].n;
+  L.push('PROTOCOLO DE CRISIS HIPERGLUCEMICAS - '+nom.toUpperCase());
+  L.push('');
+  L.push('Se aplica protocolo de crisis hiperglucemicas al ingreso.');
+  var vals=[];
+  if(d.glu!=null)vals.push('glucemia '+f(d.glu,0)+' mg/dL');
+  if(d.ph!=null)vals.push('pH '+f(d.ph,2));
+  if(d.hco3!=null)vals.push('bicarbonato '+f(d.hco3));
+  if(d.na!=null)vals.push('sodio '+f(d.na));
+  if(d.cl!=null)vals.push('cloro '+f(d.cl));
+  if(rx.k!=null)vals.push('potasio '+f(rx.k));
+  if(d.ceto!=null)vals.push('cetonuria '+d.ceto+' cruces');
+  if(vals.length)L.push('Valores al ingreso: '+vals.join(', ')+'.');
+  if(d.tieneCl){ if(d.ag!=null) L.push('Anion gap calculado: '+f(d.ag)+'.'+(d.dd!=null?' Delta-delta: '+f(d.dd,2)+'.':'')); }
+  else L.push('Anion gap NO CALCULABLE: la determinacion de cloro no esta disponible en esta institucion. Se aplica criterio de resolucion por bicarbonato y pH, con Ringer lactato obligatorio.');
+  if(d.osme!=null)L.push('Osmolaridad efectiva: '+f(d.osme)+' mOsm/kg.'+(d.nac!=null?' Sodio corregido: '+f(d.nac)+'.':''));
+  if(d.dx){L.push('');L.push('DIAGNOSTICO: '+d.dx.toUpperCase()+'.');
+    if(d.dx.indexOf('no concluyente')>=0){
+      L.push('Se asume cetoacidosis pese a cetonuria menor a 2 cruces, por presencia de acidosis metabolica con anion gap elevado e hiperglucemia. La tira de nitroprusiato detecta acetoacetato y no beta-hidroxibutirato, por lo que subestima la cetosis en los cuadros mas severos. No se dispone de determinacion de beta-hidroxibutirato en esta institucion.');
+      L.push('Se consideran y descartan otras causas de acidosis con anion gap elevado: acidosis lactica, uremia, intoxicaciones y cetoacidosis alcoholica.');
+    } else {
+      L.push('Se descartan las otras categorias de la puerta de entrada del protocolo.');
+    }}
+  if(rx.p!=null){
+    L.push('');L.push('Peso '+f(rx.p,0)+' kg. Rama '+rx.r+'.');
+    L.push('Insulina corriente 100 U en 100 mL de fisiologico (1 U/mL), sin bolo, a '+f(rx.ins)+' mL/h. Sistema purgado con 20 mL.');
+    L.push('Ringer lactato '+rx.mant+' mL/h. Potasio: '+rx.kc+'.');
+  }
+  if(modoHueco){
+    L.push('');
+    L.push('MODO HUECO ACTIVADO: sin disponibilidad de laboratorio hasta las 05 a 06 h.');
+    L.push('Se constata con laboratorio la imposibilidad de control intermedio. Se refuerza reposicion de potasio, se reduce tasa de insulina segun protocolo y se indica vigilancia horaria de ECG por enfermeria.');
+    L.push('Criterios de llamado urgente al laboratorio: onda T aplanada u onda U nueva, arritmia, deterioro del sensorio, glucemia que no baja o cae mas de 100 mg/dL por hora, potasio de ingreso menor a 3,5.');
+  }
+  var done=[],pend=[];
+  Array.prototype.forEach.call($('ckList').querySelectorAll('input'),function(b,i){
+    (b.checked?done:pend).push(CK[i][0]);
+  });
+  L.push('');
+  L.push('Checklist de ingreso cumplido: '+done.length+' de '+CK.length+' items.');
+  if(pend.length){L.push('Pendientes: '+pend.join('; ')+'.');}
+  L.push('');
+  L.push('Protocolo de Crisis Hiperglucemicas v0.3 (ago 2026). Dr. Facundo Agustin Castro.');
+  L.push('Ref: Umpierrez GE et al, Diabetes Care 2024;47:1257-1275 (PMID 39052901). ADA Standards of Care 2026, Diabetes Care 2026;49(Suppl 1):S339 (PMID 41358892).');
+  $('nota').textContent=L.join('\n');
+}
+
+function setCentro(k){
+  centro=k;
+  modoHueco = C[k].hueco && horaHueco();
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(b){
+    b.setAttribute('aria-pressed',String(b.getAttribute('data-c')===k));
+  });
+  $('lblCl').className = C[k].cl?'f':'f off';
+  if(!C[k].cl) $('cl').value='';
+  var hb=$('huecoBox');
+  if(modoHueco){
+    hb.hidden=false;
+    hb.innerHTML='<b>MODO HUECO ACTIVO.</b> En '+C[k].n+' no hay laboratorio hasta las 05 a 06 h. '+
+      '<b>Antes de nada: llamá al laboratorio y preguntá si esta noche se queda alguien.</b> Si se queda, esto no aplica. '+
+      'Si no hay nadie: potasio repuesto por anticipado, insulina en el extremo bajo, vigilancia horaria de ECG, y usá los criterios de llamado urgente.';
+  } else if(C[k].hueco){
+    hb.hidden=false;
+    hb.innerHTML='<b>Atención:</b> en '+C[k].n+' el laboratorio no procesa entre las 22 y las 05 a 06 h. Si el paciente sigue internado a esa hora, revisá el modo hueco antes del último control.';
+  } else hb.hidden=true;
+  try{localStorage.setItem('ing-centro',k);}catch(e){}
+  nota();
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(b){
+  b.addEventListener('click',function(){setCentro(b.getAttribute('data-c'));});
+});
+['glu','ph','hco3','na','cl','urea','ceto','dm','peso','edad','riesgo','k'].forEach(function(i){
+  $(i).addEventListener('input',nota); $(i).addEventListener('change',nota);
+});
+$('print').addEventListener('click',function(){window.print();});
+$('reset').addEventListener('click',function(){
+  ['glu','ph','hco3','na','cl','urea','peso','edad','k'].forEach(function(i){$(i).value='';});
+  $('ceto').value=''; $('dm').value='1'; $('riesgo').value='0';
+  Array.prototype.forEach.call($('ckList').querySelectorAll('input'),function(b){b.checked=false;});
+  nota(); window.scrollTo({top:0,behavior:'smooth'});
+});
+$('copy').addEventListener('click',function(e){
+  e.preventDefault();
+  var t=$('nota').textContent, b=$('copy');
+  var fin=function(ok){b.textContent=ok?'Copiado':'Seleccioná y copiá';
+    setTimeout(function(){b.textContent='Copiar texto';},1800);};
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){fin(true);},function(){sel();fin(false);});return;} }catch(err){}
+  sel(); fin(false);
+});
+function sel(){try{var r=document.createRange();r.selectNodeContents($('nota'));
+  var s=window.getSelection();s.removeAllRanges();s.addRange(r);}catch(e){}}
+
+pintarCk();
+var sv=null; try{sv=localStorage.getItem('ing-centro');}catch(e){}
+setCentro(sv&&C[sv]?sv:'hnc');
+})();
+</script>

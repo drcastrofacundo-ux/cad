@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0A6480">
+<title>Protocolo de Crisis Hiperglucémicas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--ground:#F4F6F8;--surface:#FFFFFF;--surface-2:#EDF1F4;--ink:#0E141A;--ink-2:#3C4A57;
+ --muted:#68788A;--hairline:#D6DEE5;--hairline-2:#B9C6D1;--accent:#0A6480;--accent-soft:#E1F0F5;
+ --accent-ink:#064B61;--warn:#9C6100;--warn-soft:#FBF0DC;
+ --shadow:0 1px 2px rgba(14,20,26,.06),0 6px 18px -10px rgba(14,20,26,.18)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --ground:#0A0F14;--surface:#121A21;--surface-2:#1A242D;--ink:#E7EEF4;--ink-2:#B7C4D0;
+ --muted:#8496A6;--hairline:#222F3A;--hairline-2:#2E3E4B;--accent:#41B9DC;--accent-soft:#10303C;
+ --accent-ink:#8FD8EE;--warn:#E8A63F;--warn-soft:#372511;
+ --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8)}}
+:root[data-theme="dark"]{--ground:#0A0F14;--surface:#121A21;--surface-2:#1A242D;--ink:#E7EEF4;
+ --ink-2:#B7C4D0;--muted:#8496A6;--hairline:#222F3A;--hairline-2:#2E3E4B;--accent:#41B9DC;
+ --accent-soft:#10303C;--accent-ink:#8FD8EE;--warn:#E8A63F;--warn-soft:#372511;
+ --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+ font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding:34px 16px 60px}
+header{text-align:center;margin-bottom:28px}
+header h1{margin:0 0 6px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+ font-size:31px;font-weight:700;line-height:1.1;text-wrap:balance}
+header p{margin:0;color:var(--muted);font-size:15px}
+header .v{display:inline-block;margin-top:11px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+ letter-spacing:.13em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);
+ padding:4px 9px;border-radius:5px}
+a.card{display:block;text-decoration:none;color:inherit;background:var(--surface);
+ border:1px solid var(--hairline);border-radius:12px;box-shadow:var(--shadow);
+ padding:18px 20px;margin-bottom:13px;transition:border-color .15s}
+a.card:hover,a.card:focus-visible{border-color:var(--accent);outline:none}
+a.card .ic{font-size:26px;line-height:1;margin-bottom:9px;display:block}
+a.card h2{margin:0 0 5px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+ font-size:20px;font-weight:700}
+a.card p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.45}
+a.card .who{display:inline-block;margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:10px;
+ letter-spacing:.11em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);
+ padding:3px 8px;border-radius:5px}
+.tip{margin-top:22px;padding:14px 16px;background:var(--warn-soft);border:1px solid var(--warn);
+ border-radius:10px;font-size:14.5px;line-height:1.5}
+.tip b{color:var(--warn)}
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--hairline);
+ font-size:12px;color:var(--muted);line-height:1.55;text-align:center}
+footer b{color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Protocolo de Crisis Hiperglucémicas</h1>
+  <p>Cetoacidosis diabética y estado hiperosmolar</p>
+  <span class="v">Versión 0.3 · Agosto 2026</span>
+</header>
+
+<a class="card" href="ingreso.html">
+  <span class="ic">🧮</span>
+  <h2>Ingreso: ¿es cetoacidosis?</h2>
+  <p>Cargás los valores del laboratorio y te dice si es cetoacidosis, hiperosmolar o hiperglucemia sin acidosis. Calcula anion gap, prescripción por peso y genera la constancia para la historia clínica.</p>
+  <span class="who">Médico</span>
+</a>
+
+<a class="card" href="enfermeria.html">
+  <span class="ic">💉</span>
+  <h2>Hoja de bomba de insulina</h2>
+  <p>Qué dextrosa colgar según el hemoglucotest, cuándo avisar, y vigilancia por monitor en el horario sin laboratorio. Se imprime en una carilla A4.</p>
+  <span class="who">Enfermería</span>
+</a>
+
+<a class="card" href="protocolo.pdf">
+  <span class="ic">📄</span>
+  <h2>Protocolo completo</h2>
+  <p>Documento con la justificación de cada decisión, adaptaciones por institución y bibliografía verificada. 19 páginas en PDF.</p>
+  <span class="who">Comité</span>
+</a>
+
+<div class="tip">
+  <b>Guardala en el celular.</b> En Chrome, menú de tres puntos y "Agregar a pantalla principal". En iPhone, botón de compartir y "Agregar a inicio". Queda como una app y <b>funciona sin señal</b>.
+</div>
+
+<footer>
+  <div><b>Redacción:</b> Dr. Facundo Agustín Castro</div>
+  <div>Terapia Intensiva · Hospital Nacional de Clínicas · Hospital de Unquillo · Sanatorio Punilla · Clínica Santa María</div>
+  <div style="margin-top:7px">Bibliografía verificada al 23/08/2026 · Próxima revisión obligatoria: agosto 2027</div>
+</footer>
+</div>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</body>
+</html>
