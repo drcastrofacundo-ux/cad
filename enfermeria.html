@@ -130,6 +130,32 @@ tr.zw{background:var(--warn-soft)} tr.zs{background:var(--stop-soft)}
   font-size:11.5px;font-weight:600;margin-top:3px;line-height:1.2}
 .ecg .ok{color:var(--go)} .ecg .bad{color:var(--stop)}
 
+.desc{border:1.5px solid var(--accent);border-radius:9px;padding:11px 13px;margin-bottom:16px;
+  background:var(--accent-soft)}
+.desc h3{margin:0 0 7px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.desc table{border-collapse:collapse;width:100%;font-size:13px}
+.desc th{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent-ink);font-weight:600;text-align:left;padding:4px 7px;border-bottom:1.5px solid var(--accent)}
+.desc td{padding:6px 7px;border-bottom:1px solid rgba(10,100,128,.2);vertical-align:top;line-height:1.35}
+.desc tr:last-child td{border-bottom:0}
+.desc td.f{font-family:"IBM Plex Mono",monospace;font-weight:700;white-space:nowrap;color:var(--accent-ink)}
+.desc p.rule{margin:8px 0 0;font-size:13px;font-weight:600;line-height:1.4}
+
+.reg{display:none}
+.reg h2{margin:0 0 3px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:22px;font-weight:700}
+.reg .sub{margin:0 0 12px;font-size:12.5px;color:var(--muted)}
+.reg .datos{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:12px}
+.reg .datos span{flex:1;min-width:130px;border-bottom:1.2px solid var(--ink);padding-bottom:2px}
+table.grid{border-collapse:collapse;width:100%;font-size:11.5px;table-layout:fixed}
+table.grid th{font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink-2);font-weight:600;padding:5px 4px;
+  border:1px solid var(--hairline-2);background:var(--surface-2);text-align:center;line-height:1.2}
+table.grid td{border:1px solid var(--hairline-2);height:23px;padding:2px 4px}
+table.grid td.h{font-family:"IBM Plex Mono",monospace;font-size:10px;text-align:center;
+  color:var(--muted);background:var(--surface-2)}
+
 footer.sh{border-top:1px solid var(--hairline);margin-top:14px;padding-top:9px;
   font-size:10.5px;color:var(--muted);line-height:1.45}
 footer.sh b{color:var(--ink-2)}
@@ -181,6 +207,24 @@ footer.sh b{color:var(--ink-2)}
 
   footer.sh{font-size:6.6pt;margin-top:8px;padding-top:5px;line-height:1.35;gap:2px}
   a{color:#000;text-decoration:none}
+
+  .desc{background:#fff;border-color:#000;border-width:1pt;padding:7px 10px;margin-bottom:9px}
+  .desc h3{color:#000;font-size:10pt;margin-bottom:4px}
+  .desc table{font-size:8.2pt}
+  .desc th{color:#000;border-color:#000;font-size:6.8pt;padding:3px 5px}
+  .desc td{padding:4px 5px;border-color:#999;line-height:1.25}
+  .desc td.f{color:#000}
+  .desc p.rule{font-size:8.2pt;margin-top:5px}
+
+  .reg{display:block!important;break-before:page;page-break-before:always}
+  .reg h2{font-size:15pt;margin-bottom:2px}
+  .reg .sub{font-size:8pt;margin-bottom:9px;color:#000}
+  .reg .datos{font-size:8.5pt;margin-bottom:10px;gap:12px}
+  .reg .datos span{border-color:#000;padding-bottom:1px}
+  table.grid{font-size:8.5pt}
+  table.grid th{font-size:6.4pt;background:#fff;border-color:#000;padding:4px 3px}
+  table.grid td{border-color:#000;height:21px}
+  table.grid td.h{background:#fff;color:#000}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -233,6 +277,19 @@ footer.sh b{color:var(--ink-2)}
     </tbody>
   </table></div>
 
+  <div class="desc">
+    <h3>Cada cuánto controlo y cuándo puedo espaciar</h3>
+    <table>
+      <thead><tr><th>Situación</th><th>HGT</th><th>Laboratorio</th></tr></thead>
+      <tbody>
+        <tr><td>Recién iniciada la bomba · se cambió la bomba o la dextrosa en la última hora · la glucemia se movió más de 100 en una hora · glucemia por debajo de 250</td><td class="f">cada 1 h</td><td class="f">a las 2 h</td></tr>
+        <tr><td>Glucemia entre 150 y 200 en dos controles seguidos, sin haber cambiado la dextrosa</td><td class="f">cada 2 h</td><td class="f">cada 4 h</td></tr>
+        <tr><td>El médico indicó el pase a insulina subcutánea</td><td class="f">cada 4 h</td><td class="f">cada 12 h</td></tr>
+      </tbody>
+    </table>
+    <p class="rule">El médico es quien autoriza espaciar los controles. Enfermería no los espacia por su cuenta.</p>
+  </div>
+
   <div class="cols">
     <div class="box">
       <h3>Controles</h3>
@@ -278,6 +335,31 @@ footer.sh b{color:var(--ink-2)}
     <p style="margin:9px 0 0;font-size:13.5px;line-height:1.45"><b>Cualquiera de los dos de la derecha, o una arritmia nueva: avisá al médico enseguida.</b> No esperes al control de la mañana.</p>
   </div>
 
+  <section class="reg">
+    <h2>Registro horario</h2>
+    <p class="sub">Protocolo de Crisis Hiperglucémicas · Hoja de enfermería · Anotar cada control y firmar.</p>
+    <div class="datos">
+      <span>Paciente</span><span>Cama</span><span>Fecha</span><span>Peso (kg)</span><span>Bomba indicada (mL/h)</span>
+    </div>
+    <table class="grid">
+      <thead><tr>
+        <th style="width:8%">Hora</th>
+        <th style="width:11%">HGT<br>mg/dL</th>
+        <th style="width:17%">Dextrosa colgada</th>
+        <th style="width:10%">Bomba<br>mL/h</th>
+        <th style="width:11%">Diuresis<br>mL</th>
+        <th style="width:11%">FC / TA</th>
+        <th style="width:21%">Observaciones · avisos</th>
+        <th style="width:11%">Firma</th>
+      </tr></thead>
+      <tbody id="filas"></tbody>
+    </table>
+    <p style="margin-top:9px;font-size:11px;line-height:1.45">
+      <b>Recordá:</b> la bomba de insulina no se apaga nunca. Si baja el azúcar, se sube la dextrosa.
+      Avisar al médico si el HGT da menos de 150, si bajó más de 100 en una hora, si hay que pasar de 100 mL/h de dextrosa, o si orina menos de 30 mL por hora.
+    </p>
+  </section>
+
   <footer class="sh">
     <div><b>Protocolo de Crisis Hiperglucémicas — Cetoacidosis Diabética y Estado Hiperosmolar.</b> Redacción: Dr. Facundo Agustín Castro. Versión 0.3, agosto 2026. Próxima revisión obligatoria: agosto 2027.</div>
     <div><b>Bibliografía:</b> Umpierrez GE, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024;47(8):1257–1275. PMID 39052901. · American Diabetes Association. 16. Diabetes Care in the Hospital: Standards of Care in Diabetes—2026. Diabetes Care 2026;49(Suppl 1):S339. PMID 41358892. · Glaser N, et al. ISPAD Clinical Practice Consensus Guidelines 2022. Pediatr Diabetes 2022;23(7):835–856. PMID 36250645.</div>
@@ -288,6 +370,11 @@ footer.sh b{color:var(--ink-2)}
 
 <script>
 (function(){
+  (function(){
+    var tb=document.getElementById('filas');
+    if(tb){var o=[];for(var i=0;i<22;i++){o.push('<tr><td class="h"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');}tb.innerHTML=o.join('');}
+  })();
+
   var CENTROS = {
     hnc:{n:'Hospital Nacional de Clínicas · Terapia Intensiva', hueco:false,
          pie:'Laboratorio disponible cada 4 horas las 24 horas.'},

@@ -2,7 +2,7 @@
 
 Cetoacidosis diabética y estado hiperosmolar en pacientes de 15 años o más.
 
-**Versión 0.3 · Agosto 2026**
+**Versión 0.4 · Agosto 2026**
 Redacción: Dr. Facundo Agustín Castro
 
 Servicios de Terapia Intensiva:
