@@ -209,6 +209,8 @@ footer b{color:var(--ink-2)}
       <label class="f"><span>Cardiópata o renal</span><select id="riesgo">
         <option value="0">No</option><option value="1">Sí</option></select></label>
       <label class="f"><span>Potasio</span><input id="k" type="number" inputmode="decimal" step="0.1"></label>
+      <label class="f"><span>¿Shock o hipoperfusión?</span><select id="shock">
+        <option value="0">No</option><option value="1">Sí</option></select></label>
     </div>
     <div class="rx" id="rx"><h3>Prescripción</h3><dl id="rxList"><div class="row"><dt>Cargá peso y potasio</dt></div></dl></div>
   </div>
@@ -233,7 +235,7 @@ footer b{color:var(--ink-2)}
 </section>
 
 <footer>
-  <div><b>Protocolo de Crisis Hiperglucémicas — Cetoacidosis Diabética y Estado Hiperosmolar.</b> Redacción: Dr. Facundo Agustín Castro. Versión 0.3, agosto 2026. Próxima revisión obligatoria: agosto 2027.</div>
+  <div><b>Protocolo de Crisis Hiperglucémicas — Cetoacidosis Diabética y Estado Hiperosmolar.</b> Redacción: Dr. Facundo Agustín Castro. Versión 0.6, agosto 2026. Próxima revisión obligatoria: agosto 2027.</div>
   <div><b>Umpierrez GE, et al.</b> Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024;47(8):1257–1275. PMID 39052901. DOI 10.2337/dci24-0032.</div>
   <div><b>American Diabetes Association.</b> 16. Diabetes Care in the Hospital: Standards of Care in Diabetes—2026. Diabetes Care 2026;49(Suppl 1):S339. PMID 41358892. DOI 10.2337/dc26-S016.</div>
   <div><b>Glaser N, et al.</b> ISPAD Clinical Practice Consensus Guidelines 2022: DKA and HHS. Pediatr Diabetes 2022;23(7):835–856. PMID 36250645.</div>
@@ -352,7 +354,8 @@ function calcular(){
 }
 
 function prescribir(){
-  var p=num('peso'),edad=num('edad'),riesgo=parseInt($('riesgo').value,10),k=num('k');
+  var p=num('peso'),edad=num('edad'),riesgo=parseInt($('riesgo').value,10),k=num('k'),
+      shock=parseInt($('shock').value,10);
   var out=$('rxList');
   if(p==null){ out.innerHTML='<div class="row"><dt>Cargá el peso</dt></div>'; return {}; }
   var m=franja(p), r=rama(edad,riesgo);
@@ -362,8 +365,23 @@ function prescribir(){
   if(modoHueco && k!=null && k>=3.5 && k<4.5) tasa=0.05;
   var ins=m*tasa;
   if(ins<1) ins=1;
-  var bolo = r==='C'?250:(r==='A'?m*10:m*15);
+
+  // Bolo inicial: solo la rama A esta condicionada a shock establecido (seccion 5 del protocolo).
+  // Rama C: 250 mL fijos, no depende del peso, con reevaluacion clinica antes de repetir.
+  // Rama B: esquema estandar, 15 mL/kg — sin gate de shock en el protocolo (ver nota aparte sobre 6.1).
+  var boloTxt='', bolo=0;
+  if(r==='A'){
+    if(shock===1){ bolo=m*10; boloTxt=f(bolo,0)+' mL (10 mL/kg), repetible según respuesta — shock presente'; }
+    else { bolo=0; boloTxt='Sin bolo: no hay shock establecido. Ir directo a mantenimiento.'; }
+  } else if(r==='C'){
+    bolo=250; boloTxt='250 mL, reevaluar clínicamente antes de repetir';
+  } else {
+    bolo=Math.round(m*15/100)*100; boloTxt=f(bolo,0)+' mL (15 mL/kg), esquema estándar';
+  }
+
   var mant = r==='B'?(Math.round((m*80/48+(1500+20*(m-20))/24)/25)*25):(Math.round((m*80/48*0.7+(1500+20*(m-20))/24)/25)*25);
+  var horaUno = bolo + mant;
+  var total48 = bolo + mant*48;
 
   var kc='', kw=false;
   if(k==null) kc='cargá el potasio';
@@ -377,15 +395,18 @@ function prescribir(){
   var rows=[
     ['Rama','<b>'+r+'</b> · '+(r==='A'?'15 a 18 años':(r==='C'?'mayor de 65 o comorbilidad':'adulto')),false],
     ['Insulina, tasa fija',f(ins)+' mL/h',false],
-    ['Bolo inicial de Ringer',(r==='C'?'250 mL, reevaluando':f(bolo,0)+' mL'+(r==='A'?' sólo si hay shock':'')),false],
+    ['Bolo inicial de Ringer',boloTxt,false],
     ['Ringer de mantenimiento',mant+' mL/h',false],
+    ['Total primera hora','<b>'+f(horaUno,0)+' mL</b> (bolo + 1 h de mantenimiento)',false],
+    ['Total en 48 horas','<b>'+f(total48,0)+' mL</b> si la rama y el ritmo no cambian — reevaluar con cada control',false],
+    ['Ajustes al ritmo de Ringer','Diuresis > 3 mL/kg/h: sumar la mitad del exceso. Dextrosa > 100 mL/h: bajar el Ringer.',false],
     ['Potasio',kc,kw],
     ['Magnesio','2 g EV en 30 min'+(C[centro].mg?'':' · empírico, no se mide acá'),false]
   ];
   out.innerHTML=rows.map(function(x){
     return '<div class="row"><dt>'+x[0]+'</dt><dd class="'+(x[2]?'warn':'')+'">'+x[1]+'</dd></div>';
   }).join('');
-  return {p:p,edad:edad,r:r,ins:ins,bolo:bolo,mant:mant,k:k,kc:kc};
+  return {p:p,edad:edad,r:r,ins:ins,bolo:bolo,boloTxt:boloTxt,mant:mant,horaUno:horaUno,total48:total48,k:k,kc:kc,shock:shock};
 }
 
 var CK=[
@@ -395,6 +416,7 @@ var CK=[
  ['ECG de 12 derivaciones','Signos de potasio y descarte de isquemia como precipitante.'],
  ['Laboratorio obligatorio solicitado','EAB (gases en sangre) · Ionograma con sodio, potasio y CLORO · Glucemia · Hemograma · Urea y creatinina · Orina completa con cetonuria.'],
  ['Laboratorio opcional, si el centro lo tiene','Lactato · Fósforo · Calcio iónico · Magnesio · PCR · Hepatograma · Troponina.'],
+ ['Fósforo, magnesio y calcio iónico, si el centro los mide','Ingreso, y después junto con el laboratorio de las horas 4, 10, 22 y 46. No es una extracción aparte: es un tubo más en cada control que ya está indicado.'],
  ['Buscar el precipitante','Infección, omisión de insulina, iSGLT2, corticoides, isquemia, embarazo. Revisar sitios de inyección: la lipohipertrofia es causa frecuente de CAD "sin explicación".'],
  ['Purgar 20 mL del sistema antes de conectar la insulina','Se adsorbe al PVC del equipo: sin purgar se pierde entre 20 y 30 % de la dosis inicial.'],
  ['Dejar escrito en la cama el ritmo de la bomba','El enfermero no calcula ni modifica ese número.'],
@@ -439,7 +461,8 @@ function nota(){
   if(rx.p!=null){
     L.push('');L.push('Peso '+f(rx.p,0)+' kg. Rama '+rx.r+'.');
     L.push('Insulina corriente 100 U en 100 mL de fisiologico (1 U/mL), sin bolo, a '+f(rx.ins)+' mL/h. Sistema purgado con 20 mL.');
-    L.push('Ringer lactato '+rx.mant+' mL/h. Potasio: '+rx.kc+'.');
+    L.push('Hidratacion: bolo inicial '+(rx.bolo>0?f(rx.bolo,0)+' mL':'sin bolo')+'. Ringer lactato de mantenimiento '+rx.mant+' mL/h. Total estimado primera hora '+f(rx.horaUno,0)+' mL; total en 48 horas '+f(rx.total48,0)+' mL si no cambia la rama ni el ritmo. Potasio: '+rx.kc+'.');
+    L.push('Fosforo, magnesio y calcio ionico (donde el centro los mida): control al ingreso y junto con el laboratorio de las horas 4, 10, 22 y 46.');
   }
   if(modoHueco){
     L.push('');
@@ -455,7 +478,7 @@ function nota(){
   L.push('Checklist de ingreso cumplido: '+done.length+' de '+CK.length+' items.');
   if(pend.length){L.push('Pendientes: '+pend.join('; ')+'.');}
   L.push('');
-  L.push('Protocolo de Crisis Hiperglucemicas v0.3 (ago 2026). Dr. Facundo Agustin Castro.');
+  L.push('Protocolo de Crisis Hiperglucemicas v0.6 (ago 2026). Dr. Facundo Agustin Castro.');
   L.push('Ref: Umpierrez GE et al, Diabetes Care 2024;47:1257-1275 (PMID 39052901). ADA Standards of Care 2026, Diabetes Care 2026;49(Suppl 1):S339 (PMID 41358892).');
   $('nota').textContent=L.join('\n');
 }
@@ -485,13 +508,13 @@ function setCentro(k){
 Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(b){
   b.addEventListener('click',function(){setCentro(b.getAttribute('data-c'));});
 });
-['glu','ph','hco3','na','cl','urea','ceto','dm','peso','edad','riesgo','k'].forEach(function(i){
+['glu','ph','hco3','na','cl','urea','ceto','dm','peso','edad','riesgo','k','shock'].forEach(function(i){
   $(i).addEventListener('input',nota); $(i).addEventListener('change',nota);
 });
 $('print').addEventListener('click',function(){window.print();});
 $('reset').addEventListener('click',function(){
   ['glu','ph','hco3','na','cl','urea','peso','edad','k'].forEach(function(i){$(i).value='';});
-  $('ceto').value=''; $('dm').value='1'; $('riesgo').value='0';
+  $('ceto').value=''; $('dm').value='1'; $('riesgo').value='0'; $('shock').value='0';
   Array.prototype.forEach.call($('ckList').querySelectorAll('input'),function(b){b.checked=false;});
   nota(); window.scrollTo({top:0,behavior:'smooth'});
 });

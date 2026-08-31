@@ -1,4 +1,4 @@
-var CACHE = 'cad-ehh-v0-5';
+var CACHE = 'cad-ehh-v0-6';
 var FILES = ['./','./index.html','./ingreso.html','./enfermeria.html','./manifest.json'];
 
 self.addEventListener('install', function(e){
