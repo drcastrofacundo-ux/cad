@@ -1,0 +1,378 @@
+<title>Transición de Insulina — De bomba a subcutánea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F4F6F8;--surface:#FFFFFF;--surface-2:#EDF1F4;
+  --ink:#0E141A;--ink-2:#3C4A57;--muted:#68788A;
+  --hairline:#D6DEE5;--hairline-2:#B9C6D1;
+  --accent:#0A6480;--accent-soft:#E1F0F5;--accent-ink:#064B61;
+  --stop:#B31F35;--stop-soft:#FBE7EA;
+  --warn:#9C6100;--warn-soft:#FBF0DC;
+  --go:#11694E;--go-soft:#E0F2EA;
+  --shadow:0 1px 2px rgba(14,20,26,.06),0 6px 18px -10px rgba(14,20,26,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0A0F14;--surface:#121A21;--surface-2:#1A242D;
+  --ink:#E7EEF4;--ink-2:#B7C4D0;--muted:#8496A6;
+  --hairline:#222F3A;--hairline-2:#2E3E4B;
+  --accent:#41B9DC;--accent-soft:#10303C;--accent-ink:#8FD8EE;
+  --stop:#FF7186;--stop-soft:#3A1219;--warn:#E8A63F;--warn-soft:#372511;
+  --go:#43D19D;--go-soft:#0E3227;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --ground:#0A0F14;--surface:#121A21;--surface-2:#1A242D;
+  --ink:#E7EEF4;--ink-2:#B7C4D0;--muted:#8496A6;
+  --hairline:#222F3A;--hairline-2:#2E3E4B;
+  --accent:#41B9DC;--accent-soft:#10303C;--accent-ink:#8FD8EE;
+  --stop:#FF7186;--stop-soft:#3A1219;--warn:#E8A63F;--warn-soft:#372511;
+  --go:#43D19D;--go-soft:#0E3227;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 24px -12px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.45;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:0 13px 70px}
+
+.bar{position:sticky;top:0;z-index:50;background:var(--surface);
+  border-bottom:1px solid var(--hairline);box-shadow:var(--shadow)}
+.bar-in{max-width:880px;margin:0 auto;padding:9px 13px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.bar-in>b{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:16px;
+  margin-right:auto;line-height:1.15}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:600;font-size:12.5px;
+  padding:6px 11px;border-radius:20px;cursor:pointer;background:var(--surface-2);color:var(--ink-2);
+  border:1px solid var(--hairline-2)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hueco-alert{margin-top:14px;padding:11px 14px;border-radius:9px;border:2px solid var(--warn);
+  background:var(--warn-soft);font-size:14px;line-height:1.45}
+.hueco-alert b{color:var(--warn)}
+.hueco-alert[hidden]{display:none}
+
+section{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;
+  box-shadow:var(--shadow);margin-top:15px;overflow:hidden}
+section[hidden]{display:none}
+.s-hd{display:flex;gap:9px;align-items:baseline;padding:10px 14px;background:var(--surface-2);
+  border-bottom:1px solid var(--hairline)}
+.s-n{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:12px;color:var(--surface);
+  background:var(--accent);padding:2px 7px;border-radius:5px;flex:0 0 auto}
+.s-hd h2{margin:0;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:18px;font-weight:700;flex:1}
+.s-body{padding:13px 14px;display:flex;flex-direction:column;gap:13px}
+
+.grid{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(112px,1fr))}
+label.f{display:flex;flex-direction:column;gap:3px}
+label.f span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);font-weight:500}
+label.f input,label.f select{padding:8px 9px;font-family:"IBM Plex Mono",monospace;font-size:16px;
+  font-weight:600;color:var(--ink);background:var(--surface-2);border:1.5px solid var(--hairline-2);
+  border-radius:7px;width:100%;font-variant-numeric:tabular-nums}
+label.f input:focus-visible,label.f select:focus-visible{outline:2px solid var(--accent);
+  outline-offset:1px;border-color:var(--accent)}
+label.f.off{opacity:.4;pointer-events:none}
+
+label.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:9px 2px}
+label.chk input{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:19px;height:19px;margin:1px 0 0;
+  border:1.6px solid var(--hairline-2);border-radius:5px;background:var(--surface);cursor:pointer;position:relative}
+label.chk input:checked{background:var(--warn);border-color:var(--warn)}
+label.chk input:checked::after{content:"";position:absolute;left:5.5px;top:2px;width:5px;height:10px;
+  border:solid var(--surface);border-width:0 2.3px 2.3px 0;transform:rotate(43deg)}
+label.chk .t{flex:1;min-width:0;font-size:14px;line-height:1.4}
+label.chk .t small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px;line-height:1.35}
+
+.verdict{border-radius:9px;padding:14px 15px;border:2px solid var(--hairline-2);background:var(--surface-2)}
+.verdict .lbl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
+.verdict .big{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:24px;
+  font-weight:700;line-height:1.15;text-wrap:balance}
+.verdict p{margin:7px 0 0;font-size:14px;line-height:1.45;color:var(--ink-2)}
+.verdict.go{border-color:var(--go);background:var(--go-soft)} .verdict.go .big{color:var(--go)}
+.verdict.stop{border-color:var(--stop);background:var(--stop-soft)} .verdict.stop .big{color:var(--stop)}
+
+.rx{border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:9px;padding:12px 14px}
+.rx h3{margin:0 0 8px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.rx dl{margin:0;display:flex;flex-direction:column;gap:7px}
+.rx .row{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;
+  padding-bottom:7px;border-bottom:1px dashed var(--hairline-2)}
+.rx .row:last-child{border-bottom:0;padding-bottom:0}
+.rx dt{font-weight:600;font-size:14px;flex:1 1 140px;min-width:0}
+.rx dd{margin:0;font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:16px;
+  color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.rx dd.warn{color:var(--stop);font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  font-weight:600;font-size:14px;white-space:normal}
+
+pre.out{margin:0;padding:11px 12px;background:var(--surface-2);border:1px solid var(--hairline);
+  border-radius:8px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;
+  color:var(--ink-2);white-space:pre-wrap;overflow-x:auto;max-height:290px;overflow-y:auto}
+.btn{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:600;font-size:13px;
+  padding:8px 13px;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;border:0}
+.btn.alt{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--hairline-2)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+
+footer{margin-top:26px;padding-top:13px;border-top:1px solid var(--hairline);
+  font-size:11.5px;color:var(--muted);line-height:1.5;display:flex;flex-direction:column;gap:5px}
+footer b{color:var(--ink-2)}
+
+@media print{
+  @page{size:A4;margin:11mm}
+  .bar,.btns,.noprint{display:none!important}
+  body{background:#fff;color:#000;font-size:10pt}
+  .wrap{max-width:none;padding:0}
+  section{border:1px solid #666;box-shadow:none;margin-top:7px;break-inside:avoid}
+  .s-hd{background:#fff;border-bottom:1px solid #666}
+  .s-n{background:#000}
+  .verdict,.rx{background:#fff!important;border-color:#000}
+  .verdict .big,.rx dd,.rx dd.warn{color:#000}
+  pre.out{background:#fff;border-color:#666;max-height:none}
+  label.f input,label.f select{background:#fff;border-color:#666}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Transición de insulina — bomba a subcutánea</b>
+  <div class="chips" role="group" aria-label="Centro">
+    <button class="chip" data-c="hnc" aria-pressed="true" type="button">Clínicas</button>
+    <button class="chip" data-c="unq" aria-pressed="false" type="button">Unquillo</button>
+    <button class="chip" data-c="pun" aria-pressed="false" type="button">Punilla</button>
+    <button class="chip" data-c="agr" aria-pressed="false" type="button">Alta Gracia</button>
+  </div>
+  <button class="btn alt" id="reset" type="button">Nuevo paciente</button>
+</div></div>
+
+<div class="wrap">
+
+<section>
+  <div class="s-hd"><span class="s-n">1</span><h2>¿Está resuelto?</h2></div>
+  <div class="s-body">
+    <div class="grid">
+      <label class="f"><span>pH</span><input id="ph" type="number" inputmode="decimal" step="0.01" min="6" max="8"></label>
+      <label class="f"><span>Bicarbonato</span><input id="hco3" type="number" inputmode="decimal" step="0.1" min="0"></label>
+      <label class="f" id="lblAg"><span>Anion gap</span><input id="ag" type="number" inputmode="decimal" step="0.1"></label>
+    </div>
+    <div class="verdict" id="verdict">
+      <div class="lbl">Estado</div>
+      <div class="big" id="vBig">Cargá los valores</div>
+      <p id="vTxt">Resolución = anion gap menor a 12 (donde hay cloro) + bicarbonato 18 o más + pH mayor a 7,30. Sin esos tres, la bomba sigue.</p>
+    </div>
+  </div>
+</section>
+
+<section id="secTol">
+  <div class="s-hd"><span class="s-n">2</span><h2>Tolerancia oral</h2></div>
+  <div class="s-body">
+    <label class="chk"><input type="checkbox" id="sinVO">
+      <span class="t">Resuelto, pero SIN tolerancia oral demostrada<small>Vómitos persistentes o sensorio alterado (típico del estado hiperosmolar del adulto mayor). Marcalo solo en esta excepción — si tolera, dejalo sin marcar: la resolución ya es la señal de arrancar la dieta.</small></span>
+    </label>
+  </div>
+</section>
+
+<section id="secDatos">
+  <div class="s-hd"><span class="s-n">3</span><h2>Paciente y dosis</h2></div>
+  <div class="s-body">
+    <div class="grid">
+      <label class="f"><span>Peso kg</span><input id="peso" type="number" inputmode="decimal" min="20" max="250"></label>
+      <label class="f"><span>Edad años</span><input id="edad" type="number" inputmode="numeric" min="15" max="110"></label>
+      <label class="f"><span>Cardiópata o renal</span><select id="riesgo">
+        <option value="0">No</option><option value="1">Sí</option></select></label>
+      <label class="f"><span>¿Insulina previa domiciliaria?</span><select id="insPrevia">
+        <option value="no">No</option><option value="si">Sí</option></select></label>
+      <label class="f off" id="lblDosisPrevia"><span>Dosis previa, U/día</span><input id="dosisPrevia" type="number" inputmode="numeric" min="1"></label>
+    </div>
+    <div class="rx" id="rx"><h3>Esquema de NPH</h3><dl id="rxList"><div class="row"><dt>Cargá los valores de resolución y el peso</dt></div></dl></div>
+  </div>
+</section>
+
+<section>
+  <div class="s-hd"><span class="s-n">4</span><h2>Constancia para la historia clínica</h2></div>
+  <div class="s-body">
+    <pre class="out" id="nota"></pre>
+    <div class="btns noprint">
+      <button class="btn" id="copy" type="button">Copiar texto</button>
+      <button class="btn alt" id="print" type="button">Imprimir A4</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><b>Protocolo de Crisis Hiperglucémicas — Transición de bomba a insulina subcutánea (NPH).</b> Redacción: Dr. Facundo Agustín Castro. Versión 0.1, agosto 2026.</div>
+  <div><b>Fry K, Ryman K, Abdelmonem A, Wang X, Vassaur J, Kataria V.</b> Success of Insulin Infusion Transitions in Moderate to Severe DKA With Transition Anion Gap ≤12 vs &gt;12 mEq/L. Hosp Pharm. 2024;59(3):334–340. PMID 38764987. DOI 10.1177/00185787231218935.</div>
+  <div><b>Saleem F, Sharma A.</b> NPH Insulin. StatPearls [Internet]. StatPearls Publishing; actualizado 12 jun 2023. NBK549860.</div>
+  <div><b>Umpierrez GE, et al.</b> Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024;47(8):1257–1275. PMID 39052901.</div>
+  <div><b>American Diabetes Association.</b> 16. Diabetes Care in the Hospital: Standards of Care in Diabetes—2026. Diabetes Care 2026;49(Suppl 1):S339. PMID 41358892.</div>
+</footer>
+</div>
+
+<script>
+(function(){
+var C={
+ hnc:{n:'Hospital Nacional de Clínicas',cl:true},
+ unq:{n:'Hospital de Unquillo',cl:true},
+ pun:{n:'Sanatorio Punilla',cl:true},
+ agr:{n:'Clínica Santa María, Alta Gracia',cl:false}
+};
+var centro='hnc';
+var $=function(i){return document.getElementById(i)};
+var num=function(i){var v=parseFloat($(i).value);return isFinite(v)?v:null};
+var f=function(n,d){return n==null?'—':n.toFixed(d===undefined?1:d).replace('.',',')};
+
+function rama(edad,riesgo){
+  if(edad!=null&&edad<19)return 'A';
+  if(riesgo===1||(edad!=null&&edad>65))return 'C';
+  return 'B';
+}
+
+function evalResolucion(){
+  var ph=num('ph'), hco3=num('hco3'), ag=num('ag');
+  var tieneCl=C[centro].cl;
+  var faltan = ph==null || hco3==null || (tieneCl && ag==null);
+  var resuelto = !faltan && ph>7.30 && hco3>=18 && (!tieneCl || ag<12);
+  return {ph:ph,hco3:hco3,ag:ag,tieneCl:tieneCl,faltan:faltan,resuelto:resuelto};
+}
+
+function pintarVerdict(res){
+  var v=$('verdict'), big=$('vBig'), txt=$('vTxt');
+  v.className='verdict';
+  if(res.faltan){
+    big.textContent='Cargá los valores';
+    txt.textContent='Resolución = anion gap menor a 12 (donde hay cloro) + bicarbonato 18 o más + pH mayor a 7,30. Sin esos tres, la bomba sigue.';
+  } else if(res.resuelto){
+    v.className='verdict go';
+    big.textContent='RESUELTO — se puede transicionar';
+    txt.textContent='Cumple criterio bioquímico de resolución. Empezá la dieta y calculá la NPH más abajo. No apagues la bomba hasta 2 horas después de la primera dosis subcutánea.';
+  } else {
+    v.className='verdict stop';
+    big.textContent='TODAVÍA NO';
+    txt.textContent='No se cumple el criterio de resolución. Seguí con la bomba de insulina EV y el ritmo de Ringer, y recontrolá.';
+  }
+}
+
+function prescribir(){
+  var res=evalResolucion();
+  pintarVerdict(res);
+  var out=$('rxList');
+  if(res.faltan){ out.innerHTML='<div class="row"><dt>Cargá los valores de resolución</dt></div>'; return {res:res}; }
+  if(!res.resuelto){ out.innerHTML='<div class="row"><dt class="warn" style="color:var(--stop)">Todavía no se cumplen los criterios de resolución. No corresponde calcular la transición.</dt></div>'; return {res:res}; }
+
+  var p=num('peso'), edad=num('edad'), riesgo=parseInt($('riesgo').value,10);
+  if(p==null){ out.innerHTML='<div class="row"><dt>Cargá el peso</dt></div>'; return {res:res}; }
+
+  var r=rama(edad,riesgo);
+  var sinVO=$('sinVO').checked;
+  var insPrevia=$('insPrevia').value;
+  var dosisPrevia=num('dosisPrevia');
+
+  var tdd, fuente;
+  if(insPrevia==='si' && dosisPrevia!=null){
+    tdd=Math.round(dosisPrevia); fuente='esquema domiciliario previo, sin cambios';
+  } else if(r==='C'){
+    tdd=Math.round(p*0.3); fuente='0,3 U/kg/día — renal crónico o fragilidad';
+  } else {
+    tdd=Math.round(p*0.55); fuente='0,5 a 0,6 U/kg/día, insulino-vírgen'+(r==='A'?' — extremar vigilancia de hipoglucemia en rama A':'');
+  }
+
+  var basal=Math.round(tdd*0.5);
+  var nphAM=Math.round(basal*2/3);
+  var nphPM=basal-nphAM;
+  var prandialTotal=sinVO?0:(tdd-basal);
+  var prandialComida=sinVO?0:Math.round(prandialTotal/3);
+
+  var rows=[
+    ['Rama',r+' · '+(r==='A'?'15 a 18 años':(r==='C'?'mayor de 65 o comorbilidad':'adulto')),false],
+    ['Dosis diaria total (TDD)','<b>'+tdd+' U/día</b> ('+fuente+')',false],
+    ['NPH mañana',nphAM+' U, antes del desayuno',false],
+    ['NPH noche',nphPM+' U, antes de la cena o al acostarse',false],
+    sinVO
+      ? ['Componente prandial','Sin tolerancia oral demostrada: no se indica. Cubrir con escala de corrección por HGT.',false]
+      : ['Insulina prandial',prandialComida+' U (regular o rápida) antes de cada comida principal — ajustar según ingesta real',false],
+    ['Solapamiento con la bomba','No apagar la bomba hasta 2 horas después de la primera dosis de NPH.',true],
+    ['Advertencia','Este esquema exige horarios de comida fijos: si se salta o atrasa una comida, hay riesgo de hipoglucemia por el pico de la NPH.',true]
+  ];
+  out.innerHTML=rows.map(function(x){
+    return '<div class="row"><dt>'+x[0]+'</dt><dd class="'+(x[2]?'warn':'')+'">'+x[1]+'</dd></div>';
+  }).join('');
+  return {res:res,p:p,r:r,tdd:tdd,fuente:fuente,nphAM:nphAM,nphPM:nphPM,sinVO:sinVO,prandialComida:prandialComida};
+}
+
+function nota(){
+  var rx=prescribir();
+  var L=[], nom=C[centro].n, res=rx.res;
+  L.push('TRANSICIÓN DE BOMBA A INSULINA SUBCUTÁNEA - '+nom.toUpperCase());
+  L.push('');
+  var vals=[];
+  if(res.ph!=null)vals.push('pH '+f(res.ph,2));
+  if(res.hco3!=null)vals.push('bicarbonato '+f(res.hco3));
+  if(res.tieneCl){ if(res.ag!=null) vals.push('anion gap '+f(res.ag)); }
+  else vals.push('anion gap no calculable en esta institución');
+  if(vals.length) L.push('Valores de resolución: '+vals.join(', ')+'.');
+  L.push(res.resuelto ? 'Criterio de resolución CUMPLIDO. Se inicia transición a insulina subcutánea NPH y dieta oral.'
+                       : 'Criterio de resolución NO cumplido. Continúa infusión endovenosa de insulina.');
+  if(res.resuelto && rx.tdd!=null){
+    L.push('');
+    L.push('Peso '+f(rx.p,0)+' kg. Rama '+rx.r+'.');
+    L.push('Dosis diaria total: '+rx.tdd+' U/día ('+rx.fuente+').');
+    L.push('NPH '+rx.nphAM+' U antes del desayuno; NPH '+rx.nphPM+' U antes de la cena o al acostarse.');
+    L.push(rx.sinVO
+      ? 'Sin tolerancia oral demostrada: sin componente prandial, cobertura con escala de corrección por HGT.'
+      : 'Insulina prandial '+rx.prandialComida+' U (regular o rápida) antes de cada comida principal, ajustar según ingesta real.');
+    L.push('No se suspende la infusión de insulina EV hasta 2 horas después de la primera dosis de NPH.');
+    L.push('Advertencia: esquema con horarios de comida fijos por riesgo de hipoglucemia asociado al pico de acción de la NPH.');
+  }
+  L.push('');
+  L.push('Protocolo de Crisis Hiperglucemicas - Transicion a subcutanea v0.1 (ago 2026). Dr. Facundo Agustin Castro.');
+  L.push('Ref: Fry K et al, Hosp Pharm 2024;59(3):334-340 (PMID 38764987). Saleem F, Sharma A, NPH Insulin, StatPearls NBK549860.');
+  $('nota').textContent=L.join('\n');
+}
+
+function setCentro(k){
+  centro=k;
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(b){
+    b.setAttribute('aria-pressed',String(b.getAttribute('data-c')===k));
+  });
+  $('lblAg').className=C[k].cl?'f':'f off';
+  if(!C[k].cl) $('ag').value='';
+  try{localStorage.setItem('trans-centro',k);}catch(e){}
+  nota();
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(b){
+  b.addEventListener('click',function(){setCentro(b.getAttribute('data-c'));});
+});
+$('insPrevia').addEventListener('change',function(){
+  var si=$('insPrevia').value==='si';
+  $('lblDosisPrevia').className=si?'f':'f off';
+  if(!si) $('dosisPrevia').value='';
+  nota();
+});
+['ph','hco3','ag','peso','edad','riesgo','dosisPrevia','sinVO'].forEach(function(i){
+  $(i).addEventListener('input',nota); $(i).addEventListener('change',nota);
+});
+$('print').addEventListener('click',function(){window.print();});
+$('reset').addEventListener('click',function(){
+  ['ph','hco3','ag','peso','edad','dosisPrevia'].forEach(function(i){$(i).value='';});
+  $('riesgo').value='0'; $('insPrevia').value='no'; $('sinVO').checked=false;
+  $('lblDosisPrevia').className='f off';
+  nota(); window.scrollTo({top:0,behavior:'smooth'});
+});
+$('copy').addEventListener('click',function(e){
+  e.preventDefault();
+  var t=$('nota').textContent, b=$('copy');
+  var fin=function(ok){b.textContent=ok?'Copiado':'Seleccioná y copiá';
+    setTimeout(function(){b.textContent='Copiar texto';},1800);};
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){fin(true);},function(){fin(false);});return;} }catch(err){}
+  fin(false);
+});
+
+$('lblDosisPrevia').className='f off';
+try{ var saved=localStorage.getItem('trans-centro'); if(saved && C[saved]) centro=saved; }catch(e){}
+setCentro(centro);
+})();
+</script>

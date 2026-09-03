@@ -2,7 +2,7 @@
 
 Cetoacidosis diabética y estado hiperosmolar en pacientes de 15 años o más.
 
-**Versión 0.6 · Agosto 2026**
+**Versión 0.7 · Agosto 2026**
 Redacción: Dr. Facundo Agustín Castro
 
 Servicios de Terapia Intensiva:
@@ -15,6 +15,7 @@ Hospital Nacional de Clínicas (Córdoba) · Hospital de Unquillo · Sanatorio P
 | `index.html` | — | Portada |
 | `ingreso.html` | Médico | Clasificación diagnóstica, anion gap, prescripción por peso, constancia para historia clínica |
 | `enfermeria.html` | Enfermería | Hoja de bomba de insulina, versión por institución, imprimible A4 |
+| `transicion.html` | Médico | Verifica resolución y calcula NPH mañana/noche + prandial al pasar de bomba a subcutánea |
 | `protocolo.pdf` | Comité | Documento completo con justificación y bibliografía |
 
 ## Bibliografía
@@ -22,6 +23,8 @@ Hospital Nacional de Clínicas (Córdoba) · Hospital de Unquillo · Sanatorio P
 1. Umpierrez GE, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. *Diabetes Care* 2024;47(8):1257-1275. PMID 39052901.
 2. American Diabetes Association. 16. Diabetes Care in the Hospital: Standards of Care in Diabetes-2026. *Diabetes Care* 2026;49(Suppl 1):S339. PMID 41358892.
 3. Glaser N, et al. ISPAD Clinical Practice Consensus Guidelines 2022. *Pediatr Diabetes* 2022;23(7):835-856. PMID 36250645.
+4. Fry K, et al. Success of Insulin Infusion Transitions in Moderate to Severe DKA. *Hosp Pharm* 2024;59(3):334-340. PMID 38764987.
+5. Saleem F, Sharma A. NPH Insulin. StatPearls [Internet]. StatPearls Publishing; 2023. NBK549860.
 
 Bibliografía verificada al 23/08/2026. Próxima revisión obligatoria: agosto 2027.
 
