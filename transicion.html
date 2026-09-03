@@ -160,7 +160,7 @@ footer b{color:var(--ink-2)}
     <div class="verdict" id="verdict">
       <div class="lbl">Estado</div>
       <div class="big" id="vBig">Cargá los valores</div>
-      <p id="vTxt">Resolución = anion gap menor a 12 (donde hay cloro) + bicarbonato 18 o más + pH mayor a 7,30. Sin esos tres, la bomba sigue.</p>
+      <p id="vTxt">Resolución = anion gap 12 o menos (donde hay cloro) + bicarbonato 18 o más + pH mayor a 7,30. Sin esos tres, la bomba sigue.</p>
     </div>
   </div>
 </section>
@@ -233,7 +233,7 @@ function evalResolucion(){
   var ph=num('ph'), hco3=num('hco3'), ag=num('ag');
   var tieneCl=C[centro].cl;
   var faltan = ph==null || hco3==null || (tieneCl && ag==null);
-  var resuelto = !faltan && ph>7.30 && hco3>=18 && (!tieneCl || ag<12);
+  var resuelto = !faltan && ph>7.30 && hco3>=18 && (!tieneCl || ag<=12);
   return {ph:ph,hco3:hco3,ag:ag,tieneCl:tieneCl,faltan:faltan,resuelto:resuelto};
 }
 
@@ -242,7 +242,7 @@ function pintarVerdict(res){
   v.className='verdict';
   if(res.faltan){
     big.textContent='Cargá los valores';
-    txt.textContent='Resolución = anion gap menor a 12 (donde hay cloro) + bicarbonato 18 o más + pH mayor a 7,30. Sin esos tres, la bomba sigue.';
+    txt.textContent='Resolución = anion gap 12 o menos (donde hay cloro) + bicarbonato 18 o más + pH mayor a 7,30. Sin esos tres, la bomba sigue.';
   } else if(res.resuelto){
     v.className='verdict go';
     big.textContent='RESUELTO — se puede transicionar';
