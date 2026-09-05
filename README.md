@@ -28,6 +28,44 @@ Hospital Nacional de Clínicas (Córdoba) · Hospital de Unquillo · Sanatorio P
 
 Bibliografía verificada al 23/08/2026. Próxima revisión obligatoria: agosto 2027.
 
-## Aviso
+## Estado
 
-Documento en revisión. No apto para uso asistencial hasta su validación por el comité de cada institución.
+Aprobado por dirección y por el comité, con revisión de diabetología.
+
+Bibliografía verificada al 23/08/2026. Próxima revisión obligatoria: agosto 2027.
+
+## Publicación
+
+Se sirve desde Netlify y **no se indexa en buscadores**: `robots.txt` y la
+cabecera `X-Robots-Tag` de `_headers` lo mantienen fuera de Google. Llega quien
+recibe el enlace o el QR, no quien busca "protocolo cetoacidosis". El sitio
+sigue siendo accesible para cualquiera que tenga la dirección: no es un control
+de acceso, es no figurar en resultados de búsqueda.
+
+Se instala en el celular como app desde el navegador: ícono en la pantalla de
+inicio, pantalla completa y funcionamiento sin señal.
+
+- **Android:** botón «⬇ Instalar la app» al pie. Si no aparece, menú de Chrome →
+  «Instalar aplicación» (no «Agregar a pantalla principal», que crea un acceso
+  directo al navegador en vez de la app).
+- **iPhone:** Safari → Compartir → «Agregar a inicio».
+
+### Cache: red primero
+
+El service worker consulta la red antes que el cache. Es deliberado y no hay que
+invertirlo: esto calcula dosis de insulina, y bajo cache-first una corrección
+publicada puede tardar en llegar mientras alguien sigue prescribiendo con la
+versión vieja. Con señal gana la versión vigente; sin señal, la última guardada.
+Al pie se muestra la fecha de publicación de la copia instalada, y un aviso
+cuando está sirviendo la guardada.
+
+Al tocar cualquier archivo hay que subir la constante `VERSION` en `sw.js` **y**
+en `registrar-sw.js` (las dos tienen que coincidir), o los teléfonos seguirán
+con el cache viejo. Si se agrega un archivo servido, hay que sumarlo a `FILES`
+de `sw.js`, o no funcionará sin señal.
+
+```
+node tests/pwa.test.js
+```
+
+Ese test verifica las dos cosas y varias más.

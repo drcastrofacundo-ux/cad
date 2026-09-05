@@ -1,0 +1,5 @@
+# Protocolo institucional: se reparte por enlace o QR a quien corresponde, no
+# se busca en Google. El sitio sigue siendo accesible para cualquiera que tenga
+# la direccion; esto solo evita que aparezca en resultados de busqueda.
+User-agent: *
+Disallow: /

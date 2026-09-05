@@ -1,0 +1,7 @@
+.claude/
+Thumbs.db
+desktop.ini
+
+# Hojas por institucion: nunca estuvieron en el repositorio y ninguna pantalla
+# las enlaza. Se dejan solo en el disco para no publicarlas sin decidirlo.
+hojas_para_imprimir/

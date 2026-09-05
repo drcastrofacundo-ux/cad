@@ -1,0 +1,11 @@
+# Cabeceras de Netlify.
+
+# Refuerza el robots.txt: algunos buscadores indexan igual una URL que les llega
+# por un enlace externo, y esta cabecera los frena tambien en ese caso.
+/*
+  X-Robots-Tag: noindex, nofollow
+
+# El service worker no debe quedar cacheado por el navegador: es el archivo que
+# decide como se sirve todo lo demas, asi que tiene que poder actualizarse.
+/sw.js
+  Cache-Control: no-cache
