@@ -13,10 +13,39 @@ Hospital Nacional de Clínicas (Córdoba) · Hospital de Unquillo · Sanatorio P
 | Archivo | Para quién | Qué hace |
 |---|---|---|
 | `index.html` | — | Portada |
-| `ingreso.html` | Médico | Clasificación diagnóstica, anion gap, prescripción por peso, constancia para historia clínica |
+| `ingreso.html` | Médico | Clasificación diagnóstica, anion gap, compensación respiratoria (Winter), prescripción por peso, constancia para historia clínica |
 | `enfermeria.html` | Enfermería | Hoja de bomba de insulina, versión por institución, imprimible A4 |
 | `transicion.html` | Médico | Verifica resolución y calcula NPH mañana/noche + prandial al pasar de bomba a subcutánea |
 | `protocolo.pdf` | Comité | Documento completo con justificación y bibliografía |
+
+## Compensación respiratoria (fórmula de Winter)
+
+`ingreso.html` compara la pCO₂ medida contra la esperada para ese bicarbonato
+(`1,5 × HCO₃ + 8`, ±2). No calcula ventilación: contesta si la compensación es
+la que corresponde, y por lo tanto si hay un trastorno respiratorio agregado.
+
+El caso que importa es la **pCO₂ por encima de lo esperado**: acidosis
+respiratoria agregada, que en cetoacidosis suele ser fatiga muscular. Una pCO₂
+de 30 parece tranquilizadora, pero con bicarbonato de 8 la esperada es 18 a 22 —
+ese paciente está fallando aunque el número se vea normal. La app lo muestra con
+una alerta, no como un número más.
+
+Deliberadamente **no se aplica** cuando no hay acidosis metabólica (bicarbonato
+≥ 22) ni cuando el pH es alcalémico (> 7,38), donde el bicarbonato bajo suele ser
+la compensación de una alcalosis respiratoria. En esos casos dar un objetivo de
+pCO₂ sería engañoso, y es lo que pasaba antes con el paciente hiperosmolar.
+También avisa cuando el objetivo cae bajo el piso fisiológico (~10 a 12 mmHg),
+donde ningún paciente puede compensar del todo.
+
+La lógica vive en la función pura `winter()` de `ingreso.html`, con tests:
+
+```
+node .\tests\winter.test.js
+```
+
+Cubren el cálculo, las tres lecturas, los bordes del rango, los dos casos en
+que no aplica y el piso fisiológico. El test extrae la función del HTML, así
+que falla también si alguien la renombra o la saca.
 
 ## Bibliografía
 

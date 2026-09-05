@@ -193,6 +193,7 @@ footer b{color:var(--ink-2)}
     <div class="grid">
       <label class="f"><span>Glucemia mg/dL</span><input id="glu" type="number" inputmode="decimal" min="0"></label>
       <label class="f"><span>pH</span><input id="ph" type="number" inputmode="decimal" step="0.01" min="6" max="8"></label>
+      <label class="f"><span>pCO₂ mmHg</span><input id="pco2" type="number" inputmode="decimal" step="0.1" min="0"></label>
       <label class="f"><span>Bicarbonato</span><input id="hco3" type="number" inputmode="decimal" step="0.1" min="0"></label>
       <label class="f"><span>Sodio</span><input id="na" type="number" inputmode="decimal" step="0.1"></label>
       <label class="f" id="lblCl"><span>Cloro</span><input id="cl" type="number" inputmode="decimal" step="0.1"></label>
@@ -213,6 +214,7 @@ footer b{color:var(--ink-2)}
     </div>
 
     <div class="calc" id="calc"></div>
+    <div class="hueco-alert" id="winterBox" hidden></div>
   </div>
 </section>
 
@@ -286,9 +288,35 @@ function rama(edad,riesgo){
   return 'B';
 }
 
+// Formula de Winter: pCO2 esperada = 1,5 x HCO3 + 8, con un margen de ±2.
+// Contesta si la compensacion respiratoria es la que corresponde a ese
+// bicarbonato, no cuanto ventilar.
+//
+// Solo vale en acidosis metabolica. Con bicarbonato normal no hay compensacion
+// que evaluar, y con pH alcalemico el bicarbonato bajo suele ser la compensacion
+// de una alcalosis respiratoria, no una acidosis metabolica: en los dos casos
+// devuelve null en vez de un objetivo enganoso.
+//
+// Funcion pura, sin DOM: tests/winter.test.js la extrae de este archivo.
+function winter(hco3, pco2, ph){
+  if(hco3==null || hco3>=22) return null;
+  if(ph!=null && ph>7.38) return null;
+  var esp=1.5*hco3+8;
+  var r={esperada:esp,min:esp-2,max:esp+2,pco2:pco2,
+    // La hiperventilacion no baja de ~10 a 12 mmHg. Por debajo de eso la
+    // formula predice un objetivo que ningun pulmon alcanza.
+    bajoElPiso:esp<12,lectura:null};
+  if(pco2==null) return r;
+  if(pco2>r.max) r.lectura='acidosis-respiratoria';
+  else if(pco2<r.min) r.lectura='alcalosis-respiratoria';
+  else r.lectura='compensacion-adecuada';
+  return r;
+}
+
 function calcular(){
   var glu=num('glu'),ph=num('ph'),hco3=num('hco3'),na=num('na'),cl=num('cl'),
-      urea=num('urea'),ceto=$('ceto').value===''?null:parseInt($('ceto').value,10),
+      urea=num('urea'),pco2=num('pco2'),
+      ceto=$('ceto').value===''?null:parseInt($('ceto').value,10),
       dm=parseInt($('dm').value,10);
   var tieneCl=C[centro].cl;
 
@@ -297,7 +325,7 @@ function calcular(){
   var nac=(na!=null&&glu!=null)?na+2.4*(glu-100)/100:null;
   var osme=(na!=null&&glu!=null)?2*na+glu/18:null;
   var osmt=(osme!=null&&urea!=null)?osme+urea/2.8:null;
-  var win=(hco3!=null)?1.5*hco3+8:null;
+  var w=winter(hco3,pco2,ph);
 
   // celdas
   var cells=[];
@@ -307,7 +335,30 @@ function calcular(){
   if(nac!=null) cells.push(['Na corregido',f(nac),nac>145?'alto':'','Na + 2,4 x (glu−100)/100']);
   if(osme!=null) cells.push(['Osm efectiva',f(osme),osme>300?'alto':'','2 x Na + glu/18']);
   if(osmt!=null) cells.push(['Osm total',f(osmt),osmt>320?'alto':'','+ urea/2,8']);
-  if(win!=null) cells.push(['pCO2 esperada',f(win-2,0)+' a '+f(win+2,0),'','fórmula de Winter']);
+  var wBox=$('winterBox'); wBox.hidden=true; wBox.innerHTML='';
+  if(w!=null){
+    var rango=f(w.min,0)+' a '+f(w.max,0);
+    if(w.lectura==null){
+      cells.push(['pCO2 esperada',rango,'','Winter — cargá la pCO2 para comparar']);
+    } else if(w.lectura==='acidosis-respiratoria'){
+      cells.push(['pCO2 medida',f(w.pco2,0),'alto','no compensa: esperada '+rango]);
+      wBox.hidden=false;
+      wBox.innerHTML='<b>La pCO₂ está por encima de lo esperado ('+rango+').</b> '+
+        'Hay una acidosis respiratoria agregada: el paciente no está compensando lo que este bicarbonato exige. '+
+        'En cetoacidosis eso suele ser fatiga muscular. Miralo respirar antes que al monitor: el Kussmaul que se apaga '+
+        'con paciente somnoliento es agotamiento, no mejoría.';
+    } else if(w.lectura==='alcalosis-respiratoria'){
+      cells.push(['pCO2 medida',f(w.pco2,0),'','alcalosis resp. agregada: esperada '+rango]);
+    } else {
+      cells.push(['pCO2 medida',f(w.pco2,0),'ok','compensación adecuada: esperada '+rango]);
+    }
+    if(w.bajoElPiso){
+      wBox.hidden=false;
+      wBox.innerHTML+=(wBox.innerHTML?'<br><br>':'')+
+        '<b>El objetivo cae por debajo del piso fisiológico.</b> La hiperventilación no baja de unos 10 a 12 mmHg, '+
+        'así que una pCO₂ de '+rango+' no es alcanzable: con este bicarbonato ningún paciente puede compensar del todo.';
+    }
+  }
   $('calc').innerHTML=cells.map(function(c){
     return '<div class="cell '+(c[2]||'')+'"><span class="k">'+c[0]+'</span><span class="v">'+c[1]+'</span><span class="n">'+c[3]+'</span></div>';
   }).join('');
@@ -366,7 +417,8 @@ function calcular(){
       txt.textContent='NO corresponde infusión de insulina ni necesariamente cama de UTI. Hidratación, insulina subcutánea, y buscar por qué se descompensó.';
     }
   }
-  return {glu:glu,ph:ph,hco3:hco3,na:na,cl:cl,ceto:ceto,ag:ag,dd:dd,nac:nac,osme:osme,osmt:osmt,dx:dx,tieneCl:tieneCl};
+  return {glu:glu,ph:ph,hco3:hco3,na:na,cl:cl,pco2:pco2,ceto:ceto,ag:ag,dd:dd,nac:nac,
+    osme:osme,osmt:osmt,w:w,dx:dx,tieneCl:tieneCl};
 }
 
 function prescribir(){
@@ -458,6 +510,7 @@ function nota(){
   var vals=[];
   if(d.glu!=null)vals.push('glucemia '+f(d.glu,0)+' mg/dL');
   if(d.ph!=null)vals.push('pH '+f(d.ph,2));
+  if(d.pco2!=null)vals.push('pCO2 '+f(d.pco2,0)+' mmHg');
   if(d.hco3!=null)vals.push('bicarbonato '+f(d.hco3));
   if(d.na!=null)vals.push('sodio '+f(d.na));
   if(d.cl!=null)vals.push('cloro '+f(d.cl));
@@ -467,6 +520,18 @@ function nota(){
   if(d.tieneCl){ if(d.ag!=null) L.push('Anion gap calculado: '+f(d.ag)+'.'+(d.dd!=null?' Delta-delta: '+f(d.dd,2)+'.':'')); }
   else L.push('Anion gap NO CALCULABLE: la determinacion de cloro no esta disponible en esta institucion. Se aplica criterio de resolucion por bicarbonato y pH, con Ringer lactato obligatorio.');
   if(d.osme!=null)L.push('Osmolaridad efectiva: '+f(d.osme)+' mOsm/kg.'+(d.nac!=null?' Sodio corregido: '+f(d.nac)+'.':''));
+  if(d.w!=null&&d.w.lectura!=null){
+    var rangoHC=f(d.w.min,0)+' a '+f(d.w.max,0);
+    if(d.w.lectura==='acidosis-respiratoria')
+      L.push('Compensacion respiratoria (formula de Winter): pCO2 esperada '+rangoHC+' mmHg, medida '+f(d.w.pco2,0)+
+        '. Por encima de lo esperado: acidosis respiratoria agregada, se evalua fatiga muscular.');
+    else if(d.w.lectura==='alcalosis-respiratoria')
+      L.push('Compensacion respiratoria (formula de Winter): pCO2 esperada '+rangoHC+' mmHg, medida '+f(d.w.pco2,0)+
+        '. Por debajo de lo esperado: alcalosis respiratoria agregada.');
+    else
+      L.push('Compensacion respiratoria (formula de Winter): pCO2 esperada '+rangoHC+' mmHg, medida '+f(d.w.pco2,0)+
+        '. Compensacion adecuada, sin trastorno respiratorio agregado.');
+  }
   if(d.dx){L.push('');L.push('DIAGNOSTICO: '+d.dx.toUpperCase()+'.');
     if(d.dx.indexOf('no concluyente')>=0){
       L.push('Se asume cetoacidosis pese a cetonuria menor a 2 cruces, por presencia de acidosis metabolica con anion gap elevado e hiperglucemia. La tira de nitroprusiato detecta acetoacetato y no beta-hidroxibutirato, por lo que subestima la cetosis en los cuadros mas severos. No se dispone de determinacion de beta-hidroxibutirato en esta institucion.');

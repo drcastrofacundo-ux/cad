@@ -9,7 +9,7 @@
 // La version se declara aca y en sw.js. tests/pwa.test.js falla si difieren.
 
 (function () {
-  var VERSION = '2026.09.04-3';
+  var VERSION = '2026.09.04-4';
 
   function pie() {
     var el = document.getElementById('cad-estado');
