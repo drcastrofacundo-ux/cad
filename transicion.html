@@ -239,12 +239,27 @@ function rama(edad,riesgo){
   return 'B';
 }
 
+// Criterio de resolucion. Los tres umbrales son inclusivos: un pH de 7,30 exacto
+// ya es resolucion, igual que un bicarbonato de 18 exacto y un anion gap de 12.
+//
+// Estaba como ph>7.30, y eso hacia que un pH de 7,30 cayera en "todavia no"
+// mientras 7,31 pasaba. Ademas contradecia a ingreso.html, que con ph>=7.30 y
+// hco3>=18 ya considera que no hay acidosis: el mismo paciente quedaba sin
+// acidosis en una pantalla y sin resolver en la otra.
+//
+// Devuelve null cuando faltan datos, para no confundir "no resuelto" con
+// "todavia no se sabe". Funcion pura, sin DOM: tests/resolucion.test.js la
+// extrae de este archivo.
+function estaResuelto(ph, hco3, ag, tieneCl){
+  if(ph==null || hco3==null || (tieneCl && ag==null)) return null;
+  return ph>=7.30 && hco3>=18 && (!tieneCl || ag<=12);
+}
+
 function evalResolucion(){
   var ph=num('ph'), hco3=num('hco3'), ag=num('ag');
   var tieneCl=C[centro].cl;
-  var faltan = ph==null || hco3==null || (tieneCl && ag==null);
-  var resuelto = !faltan && ph>7.30 && hco3>=18 && (!tieneCl || ag<=12);
-  return {ph:ph,hco3:hco3,ag:ag,tieneCl:tieneCl,faltan:faltan,resuelto:resuelto};
+  var r=estaResuelto(ph,hco3,ag,tieneCl);
+  return {ph:ph,hco3:hco3,ag:ag,tieneCl:tieneCl,faltan:r===null,resuelto:r===true};
 }
 
 function pintarVerdict(res){
