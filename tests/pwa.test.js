@@ -117,6 +117,33 @@ assert.doesNotMatch(
   'El README volvio a decir que no esta aprobado, y si lo esta',
 );
 
+// --- La version del protocolo no se dispersa --------------------------------
+// Llego a haber tres numeros distintos conviviendo: la portada decia 0.7, los
+// pies de ingreso y enfermeria 0.6, y transicion 0.1. Dos de esas menciones van
+// a la constancia que se pega en la historia clinica, asi que el registro del
+// paciente quedaba sellado con una version que no era la vigente.
+
+const VERSION_PROTOCOLO = '1.0';
+const menciones = [];
+
+for (const archivo of [...PANTALLAS, 'README.md']) {
+  const s = leer(archivo);
+  for (const [, v] of s.matchAll(/versi[oó]n\s*v?(\d+\.\d+)/gi)) menciones.push({ archivo, v });
+  for (const [, v] of s.matchAll(/\bv(\d+\.\d+)\s*\((?:ago|sep|oct|nov|dic|ene|feb|mar|abr|may|jun|jul)/gi)) {
+    menciones.push({ archivo, v });
+  }
+}
+
+assert.ok(menciones.length >= 7, `Se esperaban al menos 7 menciones de version, se hallaron ${menciones.length}`);
+
+for (const { archivo, v } of menciones) {
+  assert.equal(
+    v,
+    VERSION_PROTOCOLO,
+    `${archivo} menciona la version ${v} y la vigente es ${VERSION_PROTOCOLO}`,
+  );
+}
+
 // --- La estrategia sigue siendo red primero ---------------------------------
 
 const manejadorFetch = sw.slice(sw.indexOf("addEventListener('fetch'"));
