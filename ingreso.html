@@ -117,8 +117,14 @@ label.f.off{opacity:.4;pointer-events:none}
   padding-bottom:7px;border-bottom:1px dashed var(--hairline-2)}
 .rx .row:last-child{border-bottom:0;padding-bottom:0}
 .rx dt{font-weight:600;font-size:14px;flex:1 1 140px;min-width:0}
+/* Varios valores no son numeros sino frases largas ("NO ARRANCAR INSULINA ·
+   reponer 10 mEq...", "Sin bolo: no hay shock establecido"). Con white-space:
+   nowrap se salian de la tarjeta y el overflow:hidden de .card los cortaba justo
+   en la dosis. min-width:0 es lo que permite al elemento flex achicarse: sin eso
+   no baja del ancho de su contenido y desborda igual. */
 .rx dd{margin:0;font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:16px;
-  color:var(--accent-ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  color:var(--accent-ink);font-variant-numeric:tabular-nums;
+  min-width:0;overflow-wrap:break-word}
 .rx dd.warn{color:var(--stop)}
 
 ul.ck{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
