@@ -1,13 +1,3 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0A6480">
-<link rel="apple-touch-icon" href="iconos/icono-180.png">
-<link rel="icon" type="image/png" sizes="32x32" href="iconos/favicon-32.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="CAD / EHH">
-<script src="registrar-sw.js" defer></script>
 <title>Hoja de Bomba de Insulina</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -150,7 +140,7 @@ tr.zw{background:var(--warn-soft)} tr.zs{background:var(--stop-soft)}
 .desc td{padding:6px 7px;border-bottom:1px solid rgba(10,100,128,.2);vertical-align:top;line-height:1.35}
 .desc tr:last-child td{border-bottom:0}
 .desc td.f{font-family:"IBM Plex Mono",monospace;font-weight:700;white-space:nowrap;color:var(--accent-ink)}
-.desc p.rule{margin:8px 0 0;font-size:13px;font-weight:600;line-height:1.4}
+.desc p.rule,p.rule{margin:8px 0 0;font-size:13px;font-weight:600;line-height:1.4}
 
 .reg{display:none}
 .reg h2{margin:0 0 3px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
@@ -224,7 +214,7 @@ footer.sh b{color:var(--ink-2)}
   .desc th{color:#000;border-color:#000;font-size:6.8pt;padding:3px 5px}
   .desc td{padding:4px 5px;border-color:#999;line-height:1.25}
   .desc td.f{color:#000}
-  .desc p.rule{font-size:8.2pt;margin-top:5px}
+  .desc p.rule,p.rule{font-size:8.2pt;margin-top:5px}
 
   .reg{display:block!important;break-before:page;page-break-before:always}
   .reg h2{font-size:15pt;margin-bottom:2px}
@@ -283,9 +273,10 @@ footer.sh b{color:var(--ink-2)}
       <tr><td class="glu">180 a 250</td><td class="acc">Dx 10 % a 75 mL/h</td><td class="av"></td></tr>
       <tr class="zw"><td class="glu">120 a 180</td><td class="acc">Dx 10 % a 100 mL/h</td><td class="av"><span class="bell w">Avisar</span></td></tr>
       <tr class="zw"><td class="glu">70 a 120</td><td class="acc">Dx 10 % a 150 mL/h</td><td class="av"><span class="bell w">Avisar</span></td></tr>
-      <tr class="zs"><td class="glu">menos de 70</td><td class="acc">Dx 25 % 50 mL en bolo</td><td class="av"><span class="bell s">Avisar ya</span></td></tr>
+      <tr class="zs"><td class="glu">menos de 70</td><td class="acc">Glucosado 25 % — 50 mL en bolo IV</td><td class="av"><span class="bell s">Avisar ya</span></td></tr>
     </tbody>
   </table></div>
+  <p class="rule">La fila de "menos de 70" NO es una bolsa de dextrosa como las de arriba: son ampollas de glucosado hipertónico al 25 % (5 ampollas de 10 mL) en bolo IV directo, aparte del gotero de mantenimiento. Si sólo hay ampollas al 50 %, diluir volumen a volumen con agua para inyección.</p>
 
   <div class="desc">
     <h3>Cada cuánto controlo y cuándo puedo espaciar</h3>
@@ -372,7 +363,7 @@ footer.sh b{color:var(--ink-2)}
   </section>
 
   <footer class="sh">
-    <div><b>Protocolo de Crisis Hiperglucémicas — Cetoacidosis Diabética y Estado Hiperosmolar.</b> Redacción: Dr. Facundo Agustín Castro. Versión 1.0, septiembre 2026. Próxima revisión obligatoria: agosto 2027.</div>
+    <div><b>Protocolo de Crisis Hiperglucémicas — Cetoacidosis Diabética y Estado Hiperosmolar.</b> Redacción: Dr. Facundo Agustín Castro. Versión 0.6, agosto 2026. Próxima revisión obligatoria: agosto 2027.</div>
     <div><b>Bibliografía:</b> Umpierrez GE, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024;47(8):1257–1275. PMID 39052901. · American Diabetes Association. 16. Diabetes Care in the Hospital: Standards of Care in Diabetes—2026. Diabetes Care 2026;49(Suppl 1):S339. PMID 41358892. · Glaser N, et al. ISPAD Clinical Practice Consensus Guidelines 2022. Pediatr Diabetes 2022;23(7):835–856. PMID 36250645.</div>
     <div id="pie-centro"></div>
   </footer>
