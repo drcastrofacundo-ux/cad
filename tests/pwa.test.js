@@ -16,7 +16,7 @@ const sw = leer('sw.js');
 const registrador = leer('registrar-sw.js');
 const manifest = JSON.parse(leer('manifest.json'));
 
-const PANTALLAS = ['index.html', 'ingreso.html', 'enfermeria.html', 'transicion.html', 'hiperglucemia.html'];
+const PANTALLAS = ['index.html', 'ingreso.html', 'enfermeria.html', 'transicion.html', 'hiperglucemia.html', 'hiperglucemia-bomba.html'];
 
 // --- Cada pantalla se ve bien en un celular ---------------------------------
 
@@ -157,9 +157,16 @@ console.log(
   + `${manifest.icons.length} iconos, ${PANTALLAS.length} pantallas`,
 );
 
-// --- Hiperglucemia que no es CAD/EHH (paso 1, 2026-09-27) ----------------
+// --- Hiperglucemia que no es CAD/EHH ---------------------------------------
+// Paso 1 (2026-09-27): pantalla "en revision". Desde el mismo dia el protocolo
+// v1.0 esta vigente y la pantalla pasa a indicarlo, con la bomba de enfermeria.
 const hiper = leer('hiperglucemia.html');
-assert.match(hiper, /en revisi[oó]n/i, 'hiperglucemia.html tiene que decir que el protocolo esta en revision');
-assert.match(hiper, /indicaci[oó]n m[eé]dica del servicio/i, 'tiene que remitir a la indicacion medica del servicio');
-assert.doesNotMatch(hiper, /mL\/h|U\/kg/, 'hiperglucemia.html no puede prescribir dosis mientras este en revision');
+const bomba = leer('hiperglucemia-bomba.html');
+assert.doesNotMatch(hiper, /en revisi[oó]n/i, 'hiperglucemia.html sigue diciendo "en revision" y el protocolo esta vigente');
+assert.match(hiper, /vigente/i, 'hiperglucemia.html tiene que decir que el protocolo esta vigente');
+assert.match(hiper, /href="hiperglucemia-bomba\.html"/, 'hiperglucemia.html tiene que enlazar la bomba de enfermeria');
+assert.match(bomba, /<script src="hiperglucemia\.js"><\/script>/, 'la bomba tiene que usar hiperglucemia.js, no una copia de la logica');
+assert.doesNotMatch(bomba, /function titular|TABLA_DELTA\s*=/, 'la logica del algoritmo no puede duplicarse en la pantalla');
+assert.ok(precarga.has('hiperglucemia.js'), 'hiperglucemia.js no esta precargado: la bomba no andaria sin senal');
 assert.match(leer('index.html'), /href="hiperglucemia\.html"/, 'la portada tiene que enlazar hiperglucemia.html');
+assert.match(leer('index.html'), /href="hiperglucemia-bomba\.html"/, 'la portada tiene que enlazar la bomba de hiperglucemia');

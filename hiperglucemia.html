@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="CAD / EHH">
 <script src="registrar-sw.js" defer></script>
-<title>Hiperglucemia en el crítico — Protocolo en revisión</title>
+<title>Hiperglucemia en el crítico — Protocolo vigente</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -57,6 +57,9 @@ a.card:hover,a.card:focus-visible{border-color:var(--accent);outline:none}
 footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--hairline);
  font-size:12px;color:var(--muted);line-height:1.55;text-align:center}
 footer b{color:var(--ink-2)}
+.card ul,.card ol{margin:6px 0 0;padding-left:20px;font-size:14.5px;color:var(--ink-2);line-height:1.5}
+.card li{margin-bottom:4px}
+a.btn{display:block;text-align:center;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:13px;border-radius:10px;margin:0 0 13px}
 </style>
 </head>
 <body>
@@ -64,28 +67,88 @@ footer b{color:var(--ink-2)}
 <header>
   <h1>Hiperglucemia en el paciente crítico</h1>
   <p>Sin cetoacidosis ni estado hiperosmolar</p>
-  <span class="v">Protocolo en revisión</span>
+  <span class="v">Protocolo vigente · versión 1.0</span>
 </header>
 
-<div class="tip" style="margin-bottom:14px">
-  <b>Protocolo de hiperglucemia en revisión por el comité: seguir la indicación médica del servicio.</b>
-</div>
+<a class="btn" href="hiperglucemia-bomba.html">Bomba de insulina: qué hago ahora →</a>
 
 <div class="card">
   <span class="ic">⛔</span>
-  <h2>No uses la bomba del protocolo de CAD</h2>
-  <p>La bomba de insulina a tasa fija de este protocolo es para cetoacidosis y estado hiperosmolar. Una hiperglucemia sin acidosis no la lleva: hidratación, insulina subcutánea y buscar por qué se descompensó.</p>
+  <h2>1. Primero, descartar CAD y EHH</h2>
+  <p>Con glucemia ≥250, sospecha clínica o diabetes conocida con acidosis: estado ácido-base, ionograma con cloro y cetonas. Si hay CAD o EHH, va el protocolo de crisis hiperglucémicas, no este. <b>No uses la bomba de tasa fija de CAD en una hiperglucemia sin acidosis.</b></p>
+  <p style="margin-top:8px"><a href="ingreso.html">Ingreso: ¿es cetoacidosis? →</a></p>
 </div>
 
 <div class="card">
-  <span class="ic">🛠️</span>
-  <h2>Qué viene</h2>
-  <p>Un protocolo propio de hiperglucemia en UTI, con meta de 140 a 180 mg/dL y titulación por enfermería, que se va a presentar al comité. Hasta su aprobación, esta pantalla no indica dosis.</p>
+  <span class="ic">🎯</span>
+  <h2>2. Cuándo iniciar y meta</h2>
+  <ul>
+    <li><b>Iniciar insulina</b> con glucemia <b>≥180 mg/dL confirmada 2 veces en 24 h</b> (ADA 2026, SSC 2021).</li>
+    <li><b>Meta 140–180 mg/dL para todos</b>, incluidos diabéticos y neurocríticos. Nunca buscar 80–110 (NICE-SUGAR).</li>
+    <li>Goteo de insulina regular en el paciente inestable o con requerimientos cambiantes; en el estable, esquema basal con corrección subcutáneo.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <span class="ic">🩸</span>
+  <h2>3. Qué muestra</h2>
+  <ul>
+    <li>Capilar por defecto.</li>
+    <li><b>Arterial, con el mismo glucómetro</b>, en shock, vasopresores, edema marcado o falla renal.</li>
+    <li>Valor que no concuerda con la clínica: repetir y confirmar en laboratorio.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <span class="ic">💉</span>
+  <h2>4. La indicación del goteo</h2>
+  <ul>
+    <li>Insulina regular <b>100 U en 100 mL de SF 0,9% = 1 U/mL</b>, la misma dilución que CAD. Purgar 20 mL de la mezcla.</li>
+    <li><b>La velocidad inicial (y el bolo inicial, si corresponde) la indica el médico</b>, en U/h y mL/h.</li>
+    <li>Desde el primer control, <b>enfermería titula con el algoritmo Yale 140(B)</b>. Controles cada 1 h; cada 2 h con 4 controles seguidos en meta sin cambios.</li>
+    <li>Goteo ≥25 U/h: enfermería consulta.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <span class="ic">⚠️</span>
+  <h2>5. Hipoglucemia</h2>
+  <ul>
+    <li><b>75–99:</b> suspender siempre; control cada 30 min hasta ≥90, después cada hora; reiniciar al 75% con ≥140.</li>
+    <li><b>70–74:</b> suspender, sin dextrosa, control cada 15 min.</li>
+    <li><b>&lt;70:</b> suspender y rescate de hipoglucemia de la institución (dextrosa IV), control cada 15 min. <b>&lt;54:</b> aviso médico inmediato.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <span class="ic">📋</span>
+  <h2>6. Situaciones especiales</h2>
+  <ul>
+    <li><b>Corte no planificado de la nutrición:</b> goteo a la mitad y dextrosa IV; control a los 30 min y después cada hora.</li>
+    <li><b>Corticoides:</b> al subirlos, más requerimiento; al bajarlos o suspenderlos, controles cada 1 h.</li>
+    <li><b>Shock y vasopresores:</b> muestra arterial; volver a cada 1 h con cada cambio.</li>
+    <li><b>Falla renal o TRRC:</b> más riesgo de hipoglucemia; no espaciar a más de 2 h.</li>
+    <li><b>Neurocrítico:</b> misma meta; aviso médico con glucemia &lt;100.</li>
+    <li><b>DM1:</b> nunca sin insulina basal.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <span class="ic">🔁</span>
+  <h2>7. Paso a subcutánea</h2>
+  <ol>
+    <li>Estable, sin vasopresores en aumento, alimentación estable y 6–8 h en meta con velocidad estable.</li>
+    <li>Requerimiento de 24 h = velocidad media de las últimas 6–8 h estables × 24.</li>
+    <li><b>Basal = 50%</b> de ese requerimiento, más corrección (y prandial si come).</li>
+    <li><b>Basal 2 h antes</b> de cortar el goteo, con las dos horas escritas.</li>
+  </ol>
+  <p style="margin-top:8px">Requerimiento muy bajo, nutrición enteral, corticoides o basal temprana durante el goteo: decisión médica caso por caso.</p>
 </div>
 
 <div class="tip">
-  <a href="index.html">← Volver al inicio</a> · <a href="ingreso.html">Ingreso: ¿es cetoacidosis?</a>
+  <a href="index.html">← Volver al inicio</a> · <a href="hiperglucemia-bomba.html">Bomba de insulina</a> · <a href="ingreso.html">Ingreso</a>
 </div>
+<footer>Protocolo de hiperglucemia en el paciente crítico, <b>versión 1.0</b>, vigente desde el 27/09/2026. Algoritmo: Marvin MR et al. <i>Diabetes Technol Ther</i> 2016;18:480-6.</footer>
 </div>
 </body>
 </html>
