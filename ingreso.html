@@ -332,6 +332,14 @@ function clasificar(glu, ph, hco3, ag, osme, ceto, dm){
   return {dx:'Hiperglucemia sin acidosis', sev:''};
 }
 
+// Cartel de derivacion: solo la hiperglucemia sin acidosis se manda a la
+// pantalla de hiperglucemia en el critico. Funcion pura: tests/cartel.test.js.
+function cartelPuerta(dx){
+  if(dx!=='Hiperglucemia sin acidosis') return '';
+  return '<b>Esto no es CAD ni EHH: no uses esta bomba.</b> '+
+    '<a href="hiperglucemia.html">Hiperglucemia en el crítico →</a>';
+}
+
 function calcular(){
   var glu=num('glu'),ph=num('ph'),hco3=num('hco3'),na=num('na'),cl=num('cl'),
       urea=num('urea'),pco2=num('pco2'),
@@ -430,6 +438,8 @@ function calcular(){
       txt.textContent='NO corresponde infusión de insulina ni necesariamente cama de UTI. Hidratación, insulina subcutánea, y buscar por qué se descompensó.';
     }
   }
+  var cartel=cartelPuerta(dx);
+  if(cartel){ ddx.hidden=false; ddx.innerHTML=cartel; }
   return {glu:glu,ph:ph,hco3:hco3,na:na,cl:cl,pco2:pco2,ceto:ceto,ag:ag,dd:dd,nac:nac,
     osme:osme,osmt:osmt,w:w,dx:dx,tieneCl:tieneCl};
 }
