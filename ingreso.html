@@ -421,10 +421,32 @@ function calcular(){
     osme:osme,osmt:osmt,w:w,dx:dx,tieneCl:tieneCl};
 }
 
-function prescribir(){
+// Si el diagnostico de la puerta de entrada habilita la bomba de este protocolo.
+// Solo CAD y estado hiperosmolar la llevan; la acidosis con anion gap normal la
+// muestra con advertencia (decision del 2026-09-26) y el resto no la lleva.
+// Un diagnostico que no se reconoce no habilita la bomba: falla segura.
+// Funcion pura, sin DOM: tests/indicacion.test.js la extrae de este archivo.
+function indicacionBomba(dx){
+  if(!dx) return {tipo:'no', motivo:'Cargá glucemia, pH y bicarbonato: sin diagnóstico no hay prescripción.'};
+  if(dx.indexOf('Cetoacidosis')===0 || dx==='Estado hiperosmolar') return {tipo:'si', motivo:''};
+  if(dx==='Hiperglucemia con acidosis de anion gap normal')
+    return {tipo:'advertencia', motivo:'Cetoacidosis no confirmada (anion gap normal): el médico decide si corresponde infusión.'};
+  if(dx==='Hiperglucemia sin acidosis')
+    return {tipo:'no', motivo:'No corresponde bomba de insulina: hiperglucemia sin acidosis. Hidratación, insulina subcutánea y buscar el precipitante.'};
+  if(dx==='Acidosis metabólica sin criterio de hiperglucemia')
+    return {tipo:'no', motivo:'No corresponde este protocolo: acidosis sin criterio de hiperglucemia. Buscar otra causa.'};
+  return {tipo:'no', motivo:'Diagnóstico no contemplado por el protocolo: no se prescribe bomba.'};
+}
+
+function prescribir(dx){
   var p=num('peso'),edad=num('edad'),riesgo=parseInt($('riesgo').value,10),k=num('k'),
       shock=parseInt($('shock').value,10);
   var out=$('rxList');
+  var ind=indicacionBomba(dx);
+  if(ind.tipo==='no'){
+    out.innerHTML='<div class="row"><dt>Bomba de insulina</dt><dd class="warn">'+ind.motivo+'</dd></div>';
+    return {p:p,k:k,sinBomba:true,motivo:ind.motivo};
+  }
   if(p==null){ out.innerHTML='<div class="row"><dt>Cargá el peso</dt></div>'; return {}; }
   var m=franja(p), r=rama(edad,riesgo);
   var big=$('vBig').textContent;
@@ -471,10 +493,12 @@ function prescribir(){
     ['Potasio',kc,kw],
     ['Magnesio','2 g EV en 30 min'+(C[centro].mg?'':' · empírico, no se mide acá'),false]
   ];
+  if(ind.tipo==='advertencia') rows.unshift(['Atención',ind.motivo,true]);
   out.innerHTML=rows.map(function(x){
     return '<div class="row"><dt>'+x[0]+'</dt><dd class="'+(x[2]?'warn':'')+'">'+x[1]+'</dd></div>';
   }).join('');
-  return {p:p,edad:edad,r:r,ins:ins,bolo:bolo,boloTxt:boloTxt,mant:mant,horaUno:horaUno,total48:total48,k:k,kc:kc,shock:shock};
+  return {p:p,edad:edad,r:r,ins:ins,bolo:bolo,boloTxt:boloTxt,mant:mant,horaUno:horaUno,total48:total48,k:k,kc:kc,shock:shock,
+          advertencia:ind.tipo==='advertencia'?ind.motivo:''};
 }
 
 var CK=[
@@ -502,11 +526,12 @@ function pintarCk(){
 }
 
 function nota(){
-  var d=calcular(), rx=prescribir();
+  var d=calcular(), rx=prescribir(d.dx);
   var L=[], nom=C[centro].n;
   L.push('PROTOCOLO DE CRISIS HIPERGLUCEMICAS - '+nom.toUpperCase());
   L.push('');
-  L.push('Se aplica protocolo de crisis hiperglucemicas al ingreso.');
+  L.push(rx.sinBomba ? 'Se evalua con la puerta de entrada del protocolo de crisis hiperglucemicas.'
+                     : 'Se aplica protocolo de crisis hiperglucemicas al ingreso.');
   var vals=[];
   if(d.glu!=null)vals.push('glucemia '+f(d.glu,0)+' mg/dL');
   if(d.ph!=null)vals.push('pH '+f(d.ph,2));
@@ -539,8 +564,12 @@ function nota(){
     } else {
       L.push('Se descartan las otras categorias de la puerta de entrada del protocolo.');
     }}
-  if(rx.p!=null){
-    L.push('');L.push('Peso '+f(rx.p,0)+' kg. Rama '+rx.r+'.');
+  if(rx.sinBomba){
+    L.push('');L.push('NO SE INDICA BOMBA DE INSULINA. '+rx.motivo);
+  } else if(rx.p!=null){
+    L.push('');
+    if(rx.advertencia) L.push('ATENCION: '+rx.advertencia);
+    L.push('Peso '+f(rx.p,0)+' kg. Rama '+rx.r+'.');
     L.push('Insulina corriente 100 U en 100 mL de fisiologico (1 U/mL), sin bolo, a '+f(rx.ins)+' mL/h. Sistema purgado con 20 mL.');
     L.push('Hidratacion: bolo inicial '+(rx.bolo>0?f(rx.bolo,0)+' mL':'sin bolo')+'. Ringer lactato de mantenimiento '+rx.mant+' mL/h. Total estimado primera hora '+f(rx.horaUno,0)+' mL; total en 48 horas '+f(rx.total48,0)+' mL si no cambia la rama ni el ritmo. Potasio: '+rx.kc+'.');
     L.push('Fosforo, magnesio y calcio ionico (donde el centro los mida): control al ingreso y junto con el laboratorio de las horas 4, 10, 22 y 46.');
