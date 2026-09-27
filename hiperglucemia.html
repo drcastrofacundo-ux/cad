@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="CAD / EHH">
 <script src="registrar-sw.js" defer></script>
-<title>Protocolo de Crisis Hiperglucémicas</title>
+<title>Hiperglucemia en el crítico — Protocolo en revisión</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -40,15 +40,15 @@ header p{margin:0;color:var(--muted);font-size:15px}
 header .v{display:inline-block;margin-top:11px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
  letter-spacing:.13em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);
  padding:4px 9px;border-radius:5px}
-a.card{display:block;text-decoration:none;color:inherit;background:var(--surface);
+.card{display:block;text-decoration:none;color:inherit;background:var(--surface);
  border:1px solid var(--hairline);border-radius:12px;box-shadow:var(--shadow);
  padding:18px 20px;margin-bottom:13px;transition:border-color .15s}
 a.card:hover,a.card:focus-visible{border-color:var(--accent);outline:none}
-a.card .ic{font-size:26px;line-height:1;margin-bottom:9px;display:block}
-a.card h2{margin:0 0 5px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+.card .ic{font-size:26px;line-height:1;margin-bottom:9px;display:block}
+.card h2{margin:0 0 5px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
  font-size:20px;font-weight:700}
-a.card p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.45}
-a.card .who{display:inline-block;margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:10px;
+.card p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.45}
+.card .who{display:inline-block;margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:10px;
  letter-spacing:.11em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);
  padding:3px 8px;border-radius:5px}
 .tip{margin-top:22px;padding:14px 16px;background:var(--warn-soft);border:1px solid var(--warn);
@@ -62,55 +62,30 @@ footer b{color:var(--ink-2)}
 <body>
 <div class="wrap">
 <header>
-  <h1>Protocolo de Crisis Hiperglucémicas</h1>
-  <p>Cetoacidosis diabética y estado hiperosmolar</p>
-  <span class="v">Versión 1.0 · Septiembre 2026</span>
+  <h1>Hiperglucemia en el paciente crítico</h1>
+  <p>Sin cetoacidosis ni estado hiperosmolar</p>
+  <span class="v">Protocolo en revisión</span>
 </header>
 
-<a class="card" href="ingreso.html">
-  <span class="ic">🧮</span>
-  <h2>Ingreso: ¿es cetoacidosis?</h2>
-  <p>Cargás los valores del laboratorio y te dice si es cetoacidosis, hiperosmolar o hiperglucemia sin acidosis. Calcula anion gap, prescripción por peso y genera la constancia para la historia clínica.</p>
-  <span class="who">Médico</span>
-</a>
-
-<a class="card" href="enfermeria.html">
-  <span class="ic">💉</span>
-  <h2>Hoja de bomba de insulina</h2>
-  <p>Qué dextrosa colgar según el hemoglucotest, cuándo avisar, y vigilancia por monitor en el horario sin laboratorio. Se imprime en una carilla A4.</p>
-  <span class="who">Enfermería</span>
-</a>
-
-<a class="card" href="transicion.html">
-  <span class="ic">🔄</span>
-  <h2>Transición: bomba a subcutánea (NPH)</h2>
-  <p>Verifica si se cumple el criterio de resolución y calcula la NPH mañana/noche y la insulina prandial por peso y rama, con el aviso de solapamiento antes de apagar la bomba.</p>
-  <span class="who">Médico</span>
-</a>
-
-<a class="card" href="hiperglucemia.html">
-  <span class="ic">⚠️</span>
-  <h2>¿Hiperglucemia que no es CAD?</h2>
-  <p>Sin acidosis no corresponde la bomba de este protocolo. Qué hacer mientras el protocolo de hiperglucemia en UTI está en revisión.</p>
-  <span class="who">Médico</span>
-</a>
-
-<a class="card" href="protocolo.pdf">
-  <span class="ic">📄</span>
-  <h2>Protocolo completo</h2>
-  <p>Documento con la justificación de cada decisión, adaptaciones por institución y bibliografía verificada. 22 páginas en PDF.</p>
-  <span class="who">Comité</span>
-</a>
-
-<div class="tip">
-  <b>Guardala en el celular.</b> En Chrome, menú de tres puntos y "Agregar a pantalla principal". En iPhone, botón de compartir y "Agregar a inicio". Queda como una app y <b>funciona sin señal</b>.
+<div class="tip" style="margin-bottom:14px">
+  <b>Protocolo de hiperglucemia en revisión por el comité: seguir la indicación médica del servicio.</b>
 </div>
 
-<footer>
-  <div><b>Redacción:</b> Dr. Facundo Agustín Castro</div>
-  <div>Terapia Intensiva · Hospital Nacional de Clínicas · Hospital de Unquillo · Sanatorio Punilla · Clínica Santa María</div>
-  <div style="margin-top:7px">Bibliografía verificada al 23/08/2026 · Próxima revisión obligatoria: agosto 2027</div>
-</footer>
+<div class="card">
+  <span class="ic">⛔</span>
+  <h2>No uses la bomba del protocolo de CAD</h2>
+  <p>La bomba de insulina a tasa fija de este protocolo es para cetoacidosis y estado hiperosmolar. Una hiperglucemia sin acidosis no la lleva: hidratación, insulina subcutánea y buscar por qué se descompensó.</p>
+</div>
+
+<div class="card">
+  <span class="ic">🛠️</span>
+  <h2>Qué viene</h2>
+  <p>Un protocolo propio de hiperglucemia en UTI, con meta de 140 a 180 mg/dL y titulación por enfermería, que se va a presentar al comité. Hasta su aprobación, esta pantalla no indica dosis.</p>
+</div>
+
+<div class="tip">
+  <a href="index.html">← Volver al inicio</a> · <a href="ingreso.html">Ingreso: ¿es cetoacidosis?</a>
+</div>
 </div>
 </body>
 </html>

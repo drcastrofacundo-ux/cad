@@ -11,7 +11,7 @@
 // Al cambiar VERSION se invalida el cache anterior. Tiene que coincidir con el
 // sello que muestran las pantallas; tests/pwa.test.js falla si se desincronizan.
 
-var VERSION = '2026.09.26-1';
+var VERSION = '2026.09.27-1';
 var CACHE = 'cad-ehh-v' + VERSION;
 
 // Rutas relativas a proposito: asi la app anda igual servida desde la raiz de un
@@ -23,6 +23,7 @@ var FILES = [
   './ingreso.html',
   './enfermeria.html',
   './transicion.html',
+  './hiperglucemia.html',
   './manifest.json',
   './registrar-sw.js',
   './icon-192.png',

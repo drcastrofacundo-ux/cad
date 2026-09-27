@@ -16,7 +16,7 @@ const sw = leer('sw.js');
 const registrador = leer('registrar-sw.js');
 const manifest = JSON.parse(leer('manifest.json'));
 
-const PANTALLAS = ['index.html', 'ingreso.html', 'enfermeria.html', 'transicion.html'];
+const PANTALLAS = ['index.html', 'ingreso.html', 'enfermeria.html', 'transicion.html', 'hiperglucemia.html'];
 
 // --- Cada pantalla se ve bien en un celular ---------------------------------
 
@@ -156,3 +156,10 @@ console.log(
   `OK: publicación ${versionSw[1]} — ${precarga.size} archivos precargados, `
   + `${manifest.icons.length} iconos, ${PANTALLAS.length} pantallas`,
 );
+
+// --- Hiperglucemia que no es CAD/EHH (paso 1, 2026-09-27) ----------------
+const hiper = leer('hiperglucemia.html');
+assert.match(hiper, /en revisi[oó]n/i, 'hiperglucemia.html tiene que decir que el protocolo esta en revision');
+assert.match(hiper, /indicaci[oó]n m[eé]dica del servicio/i, 'tiene que remitir a la indicacion medica del servicio');
+assert.doesNotMatch(hiper, /mL\/h|U\/kg/, 'hiperglucemia.html no puede prescribir dosis mientras este en revision');
+assert.match(leer('index.html'), /href="hiperglucemia\.html"/, 'la portada tiene que enlazar hiperglucemia.html');
