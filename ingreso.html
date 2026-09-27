@@ -313,6 +313,25 @@ function winter(hco3, pco2, ph){
   return r;
 }
 
+// Puerta de entrada del protocolo: devuelve el diagnostico sin tocar el DOM.
+// dm: 1 = diabetico conocido. ag: anion gap o null si no hay cloro.
+// Funcion pura: tests/clasificar.test.js la extrae de este archivo.
+function clasificar(glu, ph, hco3, ag, osme, ceto, dm){
+  if(glu==null||ph==null||hco3==null) return {dx:'', sev:''};
+  var critGlu=(glu>=200||dm===1);
+  var hayAcidosis=(ph<7.30||hco3<18);
+  // sin cloro no hay AG: se usa el bicarbonato como sustituto
+  var agAlto = (ag!=null) ? (ag>12) : (hco3<15);
+  var sev = (ph<7.0||hco3<10)?'severa':((ph<7.25||hco3<15)?'moderada':'leve');
+  var esEHH=(glu>=600)&&(osme==null||osme>300)&&!hayAcidosis&&hco3>=15&&(ceto==null||ceto<2);
+  if(critGlu&&hayAcidosis&&ceto!=null&&ceto>=2) return {dx:'Cetoacidosis diabética '+sev, sev:sev};
+  if(critGlu&&hayAcidosis&&agAlto) return {dx:'Cetoacidosis diabética '+sev+' (cetonuria no concluyente)', sev:sev};
+  if(critGlu&&hayAcidosis&&!agAlto) return {dx:'Hiperglucemia con acidosis de anion gap normal', sev:''};
+  if(esEHH) return {dx:'Estado hiperosmolar', sev:''};
+  if(hayAcidosis) return {dx:'Acidosis metabólica sin criterio de hiperglucemia', sev:''};
+  return {dx:'Hiperglucemia sin acidosis', sev:''};
+}
+
 function calcular(){
   var glu=num('glu'),ph=num('ph'),hco3=num('hco3'),na=num('na'),cl=num('cl'),
       urea=num('urea'),pco2=num('pco2'),
@@ -367,27 +386,21 @@ function calcular(){
   var v=$('verdict'),big=$('vBig'),txt=$('vTxt'),dx='';
   v.className='verdict';
   var ddx=$('ddx'); ddx.hidden=true; ddx.innerHTML='';
-  var hayDatos=(glu!=null&&ph!=null&&hco3!=null);
-  if(!hayDatos){
+  var clas=clasificar(glu, ph, hco3, ag, osme, ceto, dm);
+  dx=clas.dx; var sev=clas.sev;
+  if(!dx){
     big.textContent='Cargá los valores';
     txt.textContent='Con glucemia, pH y bicarbonato ya se decide si hay acidosis. La cetonuria afina, no manda.';
   } else {
-    var critGlu=(glu>=200||dm===1);
-    var hayAcidosis=(ph<7.30||hco3<18);
-    // sin cloro no hay AG: se usa el bicarbonato como sustituto
-    var agAlto = (ag!=null) ? (ag>12) : (hco3<15);
-    var sev = (ph<7.0||hco3<10)?'severa':((ph<7.25||hco3<15)?'moderada':'leve');
-    var esEHH=(glu>=600)&&(osme==null||osme>300)&&!hayAcidosis&&hco3>=15&&(ceto==null||ceto<2);
-
-    if(critGlu&&hayAcidosis&&ceto!=null&&ceto>=2){
-      dx='Cetoacidosis diabética '+sev; v.className='verdict cad';
+    if(dx.indexOf('Cetoacidosis')===0&&dx.indexOf('(cetonuria no concluyente)')<0){
+      v.className='verdict cad';
       big.textContent=dx;
       txt.textContent = sev==='severa'
         ? 'Bomba de insulina, sin excepción, aunque sea en modo hueco. Cuidados intensivos.'
         : (modoHueco ? 'En modo hueco: insulina SUBCUTÁNEA con análogo rápido cada 1 a 2 horas, no bomba.' : 'Bomba de insulina.');
 
-    } else if(critGlu&&hayAcidosis&&agAlto){
-      dx='Cetoacidosis diabética '+sev+' (cetonuria no concluyente)';
+    } else if(dx.indexOf('(cetonuria no concluyente)')>=0){
+      
       v.className='verdict prob';
       big.textContent='Cetoacidosis probable '+sev;
       txt.innerHTML='<b>Se trata como cetoacidosis.</b> Hay acidosis metabólica con anion gap elevado e hiperglucemia. '+
@@ -398,22 +411,22 @@ function calcular(){
         'intoxicación por metanol, etilenglicol o salicilatos · cetoacidosis alcohólica. '+
         '<b>Pedí lactato si el centro lo tiene</b> y calculá el delta-delta: si es menor a 0,8 hay un componente hiperclorémico agregado.';
 
-    } else if(critGlu&&hayAcidosis&&!agAlto){
-      dx='Hiperglucemia con acidosis de anion gap normal';
+    } else if(dx==='Hiperglucemia con acidosis de anion gap normal'){
+      
       v.className='verdict ehh'; big.textContent='Acidosis sin anion gap alto';
       txt.textContent='Hay acidosis pero el anion gap es normal. Pensá en acidosis hiperclorémica (expansión previa con fisiológico), pérdidas digestivas o acidosis tubular renal. Evaluá si igual corresponde infusión según el cuadro clínico.';
 
-    } else if(esEHH){
-      dx='Estado hiperosmolar'; v.className='verdict ehh'; big.textContent='Estado hiperosmolar';
+    } else if(dx==='Estado hiperosmolar'){
+      v.className='verdict ehh'; big.textContent='Estado hiperosmolar';
       txt.textContent='Insulina a la mitad de dosis (0,05 U/kg/h). Corrección lenta: la osmolaridad no debe caer más de 3 mOsm/kg por hora.';
 
-    } else if(hayAcidosis){
-      dx='Acidosis metabólica sin criterio de hiperglucemia';
+    } else if(dx==='Acidosis metabólica sin criterio de hiperglucemia'){
+      
       v.className='verdict ehh'; big.textContent='Acidosis, revisar causa';
       txt.textContent='Hay acidosis pero no se cumple el criterio de hiperglucemia ni hay antecedente de diabetes. Buscá otra causa antes de aplicar este protocolo.';
 
     } else {
-      dx='Hiperglucemia sin acidosis'; v.className='verdict simple'; big.textContent='Hiperglucemia sin acidosis';
+      v.className='verdict simple'; big.textContent='Hiperglucemia sin acidosis';
       txt.textContent='NO corresponde infusión de insulina ni necesariamente cama de UTI. Hidratación, insulina subcutánea, y buscar por qué se descompensó.';
     }
   }
