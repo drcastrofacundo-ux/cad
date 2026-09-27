@@ -9,7 +9,7 @@
 // La version se declara aca y en sw.js. tests/pwa.test.js falla si difieren.
 
 (function () {
-  var VERSION = '2026.09.04-5';
+  var VERSION = '2026.09.26-1';
 
   function pie() {
     var el = document.getElementById('cad-estado');
@@ -32,7 +32,7 @@
 
   // --- Sello de version -----------------------------------------------------
   // Si alguien reporta un numero raro, sirve para saber que version corre.
-  // Fecha de publicacion, no la version del protocolo: el protocolo es v0.7 y
+  // Fecha de publicacion, no la version del protocolo: el protocolo es v1.0 y
   // se muestra en la portada. Este sello dice que copia corre en el telefono,
   // que sin senal puede no ser la ultima.
   var sello = linea('publicación ' + VERSION, 'var(--muted,#68788A)');
