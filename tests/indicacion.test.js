@@ -44,6 +44,16 @@ assert.match(simple.motivo, /no corresponde/i);
 
 assert.equal(indicacionBomba('Acidosis metabólica sin criterio de hiperglucemia').tipo, 'no');
 
+// CAD euglucemica confirmada: bomba, con la dextrosa desde el inicio (2026-09-29)
+const eug = indicacionBomba('Cetoacidosis diabética euglucémica leve');
+assert.equal(eug.tipo, 'advertencia', 'CAD euglucemica lleva bomba con advertencia');
+assert.match(eug.motivo, /dextrosa desde el inicio/i);
+
+// Diabetico con glucemia < 200 y cetonas no confirmadas: sin bomba (decision del 2026-09-29)
+const noConf = indicacionBomba('Acidosis en diabético con glucemia menor a 200, cetonas no confirmadas');
+assert.equal(noConf.tipo, 'no', 'sin cetonas confirmadas no hay bomba');
+assert.match(noConf.motivo, /cetonemia/i);
+
 // Sin glucemia, pH y bicarbonato no hay diagnostico: no se prescribe.
 assert.equal(indicacionBomba('').tipo, 'no');
 assert.match(indicacionBomba('').motivo, /glucemia, pH y bicarbonato/);

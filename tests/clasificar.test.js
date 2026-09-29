@@ -32,8 +32,25 @@ assert.equal(dx(450, 7.20, 12, 25, null, 3, 0), 'Cetoacidosis diabética moderad
 assert.equal(dx(450, 7.28, 16, 25, null, 2, 0), 'Cetoacidosis diabética leve');
 assert.equal(clasificar(450, 7.28, 16, 25, null, 2, 0).sev, 'leve');
 
-// Glucemia < 200 pero diabetico conocido: sigue siendo criterio (CAD euglucemica)
-assert.equal(dx(180, 7.10, 8, 25, null, 3, 1), 'Cetoacidosis diabética severa');
+// Glucemia < 200 pero diabetico conocido: el antecedente cumple el criterio
+// (ADA/EASD 2024), pero SOLO con cetonas confirmadas (cetonuria >= 2) se llama
+// CAD euglucemica. Error del 2026-09-29: diabetica que abandono el tratamiento y
+// hace hipoglucemias, glucemia 82, pH 7,28, HCO3 17, AG 21, cetonuria negativa y
+// urea 89 salia "Cetoacidosis probable leve" con bomba a 0,1 U/kg/h.
+assert.equal(dx(180, 7.10, 8, 25, null, 3, 1), 'Cetoacidosis diabética euglucémica severa');
+assert.equal(dx(120, 7.28, 16, 25, null, 2, 1), 'Cetoacidosis diabética euglucémica leve');
+assert.equal(clasificar(120, 7.28, 16, 25, null, 2, 1).sev, 'leve');
+const NO_CONF = 'Acidosis en diabético con glucemia menor a 200, cetonas no confirmadas';
+assert.equal(dx(82, 7.28, 17, 21, null, 0, 1), NO_CONF, 'el caso de la captura del 2026-09-29');
+assert.equal(dx(82, 7.28, 17, 21, null, 1, 1), NO_CONF, 'cetonuria 1 cruz no confirma');
+assert.equal(dx(82, 7.28, 17, 21, null, null, 1), NO_CONF, 'sin cetonuria no confirma');
+assert.equal(dx(150, 7.10, 8, null, null, null, 1), NO_CONF, 'sin cloro tampoco');
+assert.equal(dx(150, 7.25, 14, 8, null, 0, 1), NO_CONF, 'con AG normal y glucemia < 200 no se llama hiperglucemia');
+// El borde: 200 ya es criterio por el valor, sigue la regla de siempre
+assert.equal(dx(200, 7.28, 17, 21, null, 0, 1), 'Cetoacidosis diabética leve (cetonuria no concluyente)');
+assert.equal(dx(199, 7.28, 17, 21, null, 0, 1), NO_CONF);
+// Sin acidosis el antecedente no cambia nada
+assert.equal(dx(82, 7.40, 24, 12, null, 0, 1), 'Hiperglucemia sin acidosis');
 
 // Cetonuria no concluyente con anion gap alto
 assert.equal(dx(450, 7.10, 8, 25, null, 1, 0), 'Cetoacidosis diabética severa (cetonuria no concluyente)');

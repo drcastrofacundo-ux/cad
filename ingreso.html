@@ -324,6 +324,13 @@ function clasificar(glu, ph, hco3, ag, osme, ceto, dm){
   var agAlto = (ag!=null) ? (ag>12) : (hco3<15);
   var sev = (ph<7.0||hco3<10)?'severa':((ph<7.25||hco3<15)?'moderada':'leve');
   var esEHH=(glu>=600)&&(osme==null||osme>300)&&!hayAcidosis&&hco3>=15&&(ceto==null||ceto<2);
+  // Criterio cumplido solo por el antecedente (glucemia < 200): se exige cetonuria >= 2
+  // para llamarla CAD euglucemica. Sin cetonas confirmadas no se asume CAD (2026-09-29).
+  var porAntecedente=(glu<200&&dm===1);
+  if(porAntecedente&&hayAcidosis){
+    if(ceto!=null&&ceto>=2) return {dx:'Cetoacidosis diabética euglucémica '+sev, sev:sev};
+    return {dx:'Acidosis en diabético con glucemia menor a 200, cetonas no confirmadas', sev:''};
+  }
   if(critGlu&&hayAcidosis&&ceto!=null&&ceto>=2) return {dx:'Cetoacidosis diabética '+sev, sev:sev};
   if(critGlu&&hayAcidosis&&agAlto) return {dx:'Cetoacidosis diabética '+sev+' (cetonuria no concluyente)', sev:sev};
   if(critGlu&&hayAcidosis&&!agAlto) return {dx:'Hiperglucemia con acidosis de anion gap normal', sev:''};
@@ -406,6 +413,22 @@ function calcular(){
       txt.textContent = sev==='severa'
         ? 'Bomba de insulina, sin excepción, aunque sea en modo hueco. Cuidados intensivos.'
         : (modoHueco ? 'En modo hueco: insulina SUBCUTÁNEA con análogo rápido cada 1 a 2 horas, no bomba.' : 'Bomba de insulina.');
+      if(dx.indexOf('euglucémica')>=0){
+        ddx.hidden=false;
+        ddx.innerHTML='<b>Euglucémica: la dextrosa va desde el inicio, junto con la insulina</b>, según la tabla de la hoja de enfermería. '+
+          'La insulina se da para frenar la cetosis, no para bajar la glucemia: no se reduce porque la glucemia esté normal. '+
+          'Buscá iSGLT2 (gliflozinas), embarazo, ayuno prolongado o alcohol.';
+      }
+
+    } else if(dx==='Acidosis en diabético con glucemia menor a 200, cetonas no confirmadas'){
+      v.className='verdict ehh'; big.textContent='Acidosis sin cetonas confirmadas';
+      txt.innerHTML='<b>No se asume cetoacidosis.</b> Es diabético, pero la glucemia es menor a 200 y la cetonuria no llega a 2 cruces. '+
+        'Una CAD euglucémica necesita cetonas demostradas; sin ellas, la bomba a tasa fija con esta glucemia produce hipoglucemia.';
+      ddx.hidden=false;
+      ddx.innerHTML='<b>Buscá la causa de la acidosis:</b> uremia (mirá la urea) · acidosis láctica (sepsis, hipoperfusión, metformina) · '+
+        'cetoacidosis alcohólica o por ayuno, que cursan con glucemia normal o baja y pueden dar tira negativa · metanol, etilenglicol, salicilatos. '+
+        '<b>Pedí cetonemia y lactato.</b> Si la cetonemia da 3 mmol/L o más, es CAD euglucémica: corresponde la bomba, con dextrosa desde el inicio. '+
+        'Si viene haciendo hipoglucemias sin tratamiento, eso va en contra de una CAD: pensá en falla renal, hipoglucemiantes que siga tomando (glibenclamida) o insuficiencia suprarrenal.';
 
     } else if(dx.indexOf('(cetonuria no concluyente)')>=0){
       
@@ -451,7 +474,11 @@ function calcular(){
 // Funcion pura, sin DOM: tests/indicacion.test.js la extrae de este archivo.
 function indicacionBomba(dx){
   if(!dx) return {tipo:'no', motivo:'Cargá glucemia, pH y bicarbonato: sin diagnóstico no hay prescripción.'};
+  if(dx.indexOf('Cetoacidosis diabética euglucémica')===0)
+    return {tipo:'advertencia', motivo:'CAD euglucémica: dextrosa desde el inicio, junto con la insulina, según la tabla de enfermería. No bajar la insulina por la glucemia normal.'};
   if(dx.indexOf('Cetoacidosis')===0 || dx==='Estado hiperosmolar') return {tipo:'si', motivo:''};
+  if(dx==='Acidosis en diabético con glucemia menor a 200, cetonas no confirmadas')
+    return {tipo:'no', motivo:'No se indica bomba: glucemia menor a 200 sin cetonas confirmadas. Pedir cetonemia y lactato y buscar otra causa de acidosis (uremia, láctica, alcohólica o por ayuno).'};
   if(dx==='Hiperglucemia con acidosis de anion gap normal')
     return {tipo:'advertencia', motivo:'Cetoacidosis no confirmada (anion gap normal): el médico decide si corresponde infusión.'};
   if(dx==='Hiperglucemia sin acidosis')
