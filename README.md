@@ -56,8 +56,11 @@ que falla también si alguien la renombra o la saca.
 3. Glaser N, et al. ISPAD Clinical Practice Consensus Guidelines 2022. *Pediatr Diabetes* 2022;23(7):835-856. PMID 36250645.
 4. Fry K, et al. Success of Insulin Infusion Transitions in Moderate to Severe DKA. *Hosp Pharm* 2024;59(3):334-340. PMID 38764987.
 5. Saleem F, Sharma A. NPH Insulin. StatPearls [Internet]. StatPearls Publishing; 2023. NBK549860.
+6. Balanced crystalloids versus normal saline for initial fluid resuscitation in diabetic ketoacidosis: a systematic review and meta-analysis of randomized controlled trials. *J Crit Care Med* 2026;12(3):328-341. DOI 10.62838/jccm-2026-0022.
 
 Bibliografía verificada al 23/08/2026. Próxima revisión obligatoria: agosto 2027.
+
+**Revisión de evidencia 07/11/2026: no hay cambios de conducta.** Lo único nuevo relevante en adultos es la referencia 6, un metaanálisis de ECA: con cristaloides balanceados el bicarbonato sube más a las 12 h (+2,5 mmol/L), pero el tiempo hasta la resolución no se acorta de forma significativa. Respalda que en general se acepte SF o balanceado, y que en Alta Gracia el Ringer lactato siga siendo obligatorio porque ahí no se mide cloro y la resolución se define por bicarbonato.
 
 ## Estado
 
