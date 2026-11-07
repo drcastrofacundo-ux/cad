@@ -16,7 +16,9 @@ Hospital Nacional de Clínicas (Córdoba) · Hospital de Unquillo · Sanatorio P
 | `ingreso.html` | Médico | Clasificación diagnóstica, anion gap, compensación respiratoria (Winter), prescripción por peso, constancia para historia clínica |
 | `enfermeria.html` | Enfermería | Hoja de bomba de insulina, versión por institución, imprimible A4 |
 | `transicion.html` | Médico | Verifica resolución y calcula NPH mañana/noche + prandial al pasar de bomba a subcutánea |
-| `protocolo.pdf` | Comité | Documento completo con justificación y bibliografía |
+| `hiperglucemia.html` | Médico | Hiperglucemia en el paciente crítico sin acidosis (no es CAD/EHH) |
+| `hiperglucemia-bomba.html` | Enfermería | Bomba de insulina para hiperglucemia en el crítico (Yale 140) |
+| `protocolo.pdf` | Comité | Documento completo con justificación y bibliografía. **Pendiente: el PDF actual es un borrador de agosto 2026 marcado «en revisión»; reemplazar por la versión 1.0** |
 
 ## Compensación respiratoria (fórmula de Winter)
 
@@ -61,12 +63,11 @@ Bibliografía verificada al 23/08/2026. Próxima revisión obligatoria: agosto 2
 
 Aprobado por dirección y por el comité, con revisión de diabetología.
 
-Bibliografía verificada al 23/08/2026. Próxima revisión obligatoria: agosto 2027.
-
 ## Publicación
 
-Se sirve desde Netlify y **no se indexa en buscadores**: `robots.txt` y la
-cabecera `X-Robots-Tag` de `_headers` lo mantienen fuera de Google. Llega quien
+Se sirve desde GitHub Pages (`https://drcastrofacundo-ux.github.io/cad/`) y **no se
+indexa en buscadores**: `robots.txt` lo mantiene fuera de Google (la cabecera
+`X-Robots-Tag` de `_headers` solo aplica en Netlify, GitHub Pages la ignora). Llega quien
 recibe el enlace o el QR, no quien busca "protocolo cetoacidosis". El sitio
 sigue siendo accesible para cualquiera que tenga la dirección: no es un control
 de acceso, es no figurar en resultados de búsqueda.
